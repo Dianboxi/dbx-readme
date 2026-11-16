@@ -157,7 +157,7 @@ JSON 配置 + 受限的本地 PNG / mask（可选）
   "schemaVersion": 1,
   "preset": "pixel",
   "theme": "ocean",
-  "title": "readme-banner",
+  "title": "dbx-readme",
   "tagline": "One config. Every repository.",
   "outputDir": "assets/banner",
   "options": {

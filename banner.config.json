@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "preset": "ascii",
   "theme": "ocean",
-  "title": "readme-banner",
+  "title": "dbx-readme",
   "outputDir": "assets/banner",
   "options": {
     "font": "block",

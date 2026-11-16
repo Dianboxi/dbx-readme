@@ -44,14 +44,14 @@ for (const dark of [false, true]) {
     svg(moving, { dark, fps: 10, scale: 8, label: 'Front-face sweep source', budget: false }), mask,
     'Folded signal badge in ASCII. Glint is clipped to its front; sides and shadow are static.') : still;
   output.set(`project-art.${variant}.svg`, art + '\n');
-  const banner = bannerSvg('readme-banner', {
+  const banner = bannerSvg('dbx-readme', {
     font: 'slim', shadow: 'single', effect: 'still',
     color: dark ? ['#2dd4bf', '#818cf8'] : ['#0f766e', '#4338ca'],
     tagline: 'One config. Every repository.', taglineColor: dark ? '#cbd5e1' : '#475569',
     art: { svg: art }, artSize: 2.1, place: 'left', spacing: 32,
     background: dark ? '#0b1220' : '#f8fafc', padding: 28, radius: 16,
     fps: 8, scale: 5,
-    label: 'readme-banner. Folded signal logo with front-only glint. Static sides and shadow.',
+    label: 'dbx-readme. Folded signal logo with front-only glint. Static sides and shadow.',
   });
   // bannerSvg(effect:still) targets its own standard frames, not our independently named face sweep.
   output.set(`project-banner.${variant}.svg`, banner + '\n');

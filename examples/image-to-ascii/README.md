@@ -1,6 +1,6 @@
 # 新 Logo → ASCII → 仅正面扫光
 
-独立的本地样例，**没有替换根 README 横幅，也没有改变 v0.1.0 CLI 配置接口**。
+独立的本地样例，**没有替换根 README 横幅，也没有改变 v0.2.0 CLI 配置接口**。
 
 ## 新样式
 
@@ -16,7 +16,7 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="project-banner.dark.svg">
-  <img alt="readme-banner: folded signal logo with front-only ASCII glint" src="project-banner.light.svg" width="960">
+  <img alt="dbx-readme: folded signal logo with front-only ASCII glint" src="project-banner.light.svg" width="960">
 </picture>
 
 - [深色动态横幅](<project-banner.dark.svg>) / [浅色动态横幅](<project-banner.light.svg>)。

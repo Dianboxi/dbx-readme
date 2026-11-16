@@ -1,13 +1,13 @@
 <!-- readme-banner:start -->
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/banner/banner.dark.svg">
-  <img alt="readme-banner" src="assets/banner/banner.light.svg" width="960">
+  <img alt="dbx-readme" src="assets/banner/banner.light.svg" width="960">
 </picture>
 <!-- readme-banner:end -->
 
-# readme-banner
+# dbx-readme
 
-[![CI](https://github.com/abworks-dev/readme-banner/actions/workflows/ci.yml/badge.svg)](https://github.com/abworks-dev/readme-banner/actions/workflows/ci.yml)
+[![CI](https://github.com/Dianboxi/dbx-readme/actions/workflows/ci.yml/badge.svg)](https://github.com/Dianboxi/dbx-readme/actions/workflows/ci.yml)
 
 用 JSON 配置在本地生成适合 README 的浅 / 深色横幅；需要时，再显式更新指定文档中的受管块。无需远程截图服务。
 
@@ -17,14 +17,14 @@
 
 | 能力 | 当前状态 | 使用方式 |
 | --- | --- | --- |
-| ASCII 横幅 | **已可用**，`v0.1.0` 唯一注册的 CLI preset | `--preset ascii`；输出两张 SVG，保留原生动画 |
+| ASCII 横幅 | **已可用**，`v0.2.0` 唯一注册的 CLI preset | `--preset ascii`；输出两张 SVG，保留原生动画 |
 | 四套 ASCII 主题 | **已可用** | `terminal` / `ocean` / `neon` / `minimal`，支持自定义标题颜色 |
-| 中文 / 中英混排像素横幅 | **实验性、可复现样例**，未注册到 CLI、不在 `v0.1.0` 中 | 独立生成脚本；**不能使用 `--preset pixel`** |
+| 中文 / 中英混排像素横幅 | **实验性、可复现样例**，未注册到 CLI、不在 `v0.2.0` 中 | 独立生成脚本；**不能使用 `--preset pixel`** |
 | 图片转 ASCII、正面遮罩动画 | **独立样例**，不是现有 CLI 配置选项 | [转换与遮罩说明](<examples/image-to-ascii/README.md>) |
 
 `preset` 决定布局与渲染方式，`theme` 决定配色，两者不是一回事。本项目提供本地 CLI、程序化扩展接口和可移植 skill，不提供托管服务、GitHub Action 或 MCP 服务。
 
-由 [abworks-dev](https://github.com/abworks-dev) 维护，仓库为 [abworks-dev/readme-banner](https://github.com/abworks-dev/readme-banner)。本文展示当前仓库内容；固定标签 `v0.1.0` 的代码不因后续样例更新而改变。`@readme-banner/cli` **尚未发布到 npm**。
+由 [Dianboxi](https://github.com/Dianboxi) 维护，仓库为 [Dianboxi/dbx-readme](https://github.com/Dianboxi/dbx-readme)。本文展示当前仓库内容；固定标签 `v0.2.0` 的代码不因后续样例更新而改变。`dbx-readme` **尚未发布到 npm**。
 
 ## 预设预览
 
@@ -98,7 +98,7 @@
 
 ## 快速开始
 
-**CLI 需要 Node.js ≥22 与 npm。** 独立像素原型的源码工具链需要 **Node.js ≥22.18，推荐 Node 24**，并需准备固定上游检出；不要把原型要求或样例脚本当作 `v0.1.0` CLI 安装步骤。
+**CLI 需要 Node.js ≥22 与 npm。** 独立像素原型的源码工具链需要 **Node.js ≥22.18，推荐 Node 24**，并需准备固定上游检出；不要把原型要求或样例脚本当作 `v0.2.0` CLI 安装步骤。
 
 ### 本地源码运行
 
@@ -106,23 +106,23 @@
 
 ```sh
 npm install
-node bin/readme-banner.mjs --help
+node bin/dbx.mjs --help
 
 # --cwd 是要添加横幅的目标仓库，不是工具源码目录
 # init 只创建配置，不生成图片、不改 README
-node bin/readme-banner.mjs init --cwd "../my-project" --preset ascii --theme ocean --title "MY PROJECT" --tagline "Build something useful" --art donut --effect glint
+node bin/dbx.mjs init --cwd "../my-project" --preset ascii --theme ocean --title "MY PROJECT" --tagline "Build something useful" --art donut --effect glint
 
 # 生成两张 SVG，向 stdout 输出可复制的嵌入片段；不改 README
-node bin/readme-banner.mjs generate --cwd "../my-project"
+node bin/dbx.mjs generate --cwd "../my-project"
 ```
 
 **只有明确授权更新目标文档后，才添加 `--readme`：**
 
 ```sh
-node bin/readme-banner.mjs generate --cwd "../my-project" --readme "README.md"
+node bin/dbx.mjs generate --cwd "../my-project" --readme "README.md"
 
 # 只检查图片与指定 README 的受管块，不写文件
-node bin/readme-banner.mjs generate --cwd "../my-project" --readme "README.md" --check
+node bin/dbx.mjs generate --cwd "../my-project" --readme "README.md" --check
 ```
 
 把 `../my-project` 换成自己的目标目录，按所用 shell 正确引用路径与文本；不要把不可信输入拼成命令。嵌入 URL 相对于目标文档所在目录计算，应使用实际生成片段，不手动照抄其他目录的路径。
@@ -132,17 +132,17 @@ node bin/readme-banner.mjs generate --cwd "../my-project" --readme "README.md" -
 需要本机 Git，首次安装需要网络；固定标签只固定工具代码，安装仍可能执行依赖与构建脚本，应只运行信任的来源。
 
 ```sh
-npx --yes --package github:abworks-dev/readme-banner#v0.1.0 readme-banner --help
-npx --yes --package github:abworks-dev/readme-banner#v0.1.0 readme-banner init --cwd "../my-project" --theme ocean --title "MY PROJECT"
-npx --yes --package github:abworks-dev/readme-banner#v0.1.0 readme-banner generate --cwd "../my-project"
+npx --yes --package github:Dianboxi/dbx-readme#v0.2.0 dbx --help
+npx --yes --package github:Dianboxi/dbx-readme#v0.2.0 dbx init --cwd "../my-project" --theme ocean --title "MY PROJECT"
+npx --yes --package github:Dianboxi/dbx-readme#v0.2.0 dbx generate --cwd "../my-project"
 ```
 
-需要编辑目标文档时才为最后一条添加 `--readme "README.md"`。不要使用 `npx @readme-banner/cli`，该包尚未发布。
+需要编辑目标文档时才为最后一条添加 `--readme "README.md"`。不要使用 `npx dbx-readme`，该包尚未发布。
 
 若 npm 报 `EALLOWGIT`，**仅在用户已授权运行此可信仓库、且组织策略允许时**，支持该选项的 npm 可为单次命令添加：
 
 ```sh
-npx --allow-git=root --yes --package github:abworks-dev/readme-banner#v0.1.0 readme-banner --help
+npx --allow-git=root --yes --package github:Dianboxi/dbx-readme#v0.2.0 dbx --help
 ```
 
 后续 `init` / `generate` 同样将选项放在 `npx` 后。**不要修改全局 npm 配置放开 Git 来源**；未授权或策略禁止时停止询问。旧版 npm 不支持该选项时，使用普通命令或经授权的源码安装。
@@ -177,14 +177,14 @@ npx --allow-git=root --yes --package github:abworks-dev/readme-banner#v0.1.0 rea
 - **目标边界**：`--cwd` 限定配置、输出与文档路径；拒绝根目录外路径、符号链接逃逸，以及硬链接数大于 1 的现有文件。不要为绕过错误而扩大写入范围。
 - **数据而非代码**：配置不执行 JavaScript、不加载任意插件，不接受远程用户 SVG 作为 art。它也不提供恶意代码沙箱；安装工具、注册扩展或运行样例仍需信任对应代码。
 
-字段、字体、art 与完整命令契约见[配置与运行参考](<skills/readme-banner/references/configuration.md>)；程序化扩展与信任边界见[架构说明](<docs/architecture.md>)。CLI 的 `--help`、`presets --json`、`themes --json` 可查看当前可用能力，不修改项目。
+字段、字体、art 与完整命令契约见[配置与运行参考](<skills/dbx-readme/references/configuration.md>)；程序化扩展与信任边界见[架构说明](<docs/architecture.md>)。CLI 的 `--help`、`presets --json`、`themes --json` 可查看当前可用能力，不修改项目。
 
 ## 给 agent 使用
 
-可移植操作说明位于 [skills/readme-banner/SKILL.md](<skills/readme-banner/SKILL.md>)：
+可移植操作说明位于 [skills/dbx-readme/SKILL.md](<skills/dbx-readme/SKILL.md>)：
 
 ```sh
-npx skills add abworks-dev/readme-banner --skill readme-banner
+npx skills add Dianboxi/dbx-readme --skill dbx-readme
 ```
 
 安装 skill 不会自动生成横幅。请说明目标仓库、标题、主题，以及是否授权插入文档。默认流程先 `init` 后 `generate`，不自动编辑文档、不提交、不推送、不发布，保留无关改动。

@@ -1,6 +1,6 @@
 # 配置与运行参考
 
-本参考用于 [readme-banner skill](<../SKILL.md>)；用户入口见 [项目 README](<../../../README.md>)。配置是 JSON 数据，不是可执行 JavaScript。
+本参考用于 [dbx-readme skill](<../SKILL.md>)；用户入口见 [项目 README](<../../../README.md>)。配置是 JSON 数据，不是可执行 JavaScript。
 
 ## 完整示例
 
@@ -76,29 +76,29 @@ ASCII 大标题支持所选内置字体的字母、数字、空格以及这些�
 需要 Node.js >=22。源码 checkout 中先在**工具目录**运行 `npm install`（`prepare` 自动构建），然后使用本地入口，不必联网重装自己：
 
 ```sh
-node "/absolute/path/readme-banner/bin/readme-banner.mjs" --help
+node "/absolute/path/dbx-readme/bin/dbx.mjs" --help
 ```
 
-从 GitHub 的固定标签 `v0.1.0` 运行，完整入口为：
+从 GitHub 的固定标签 `v0.2.0` 运行，完整入口为：
 
 ```sh
-npx --yes --package github:abworks-dev/readme-banner#v0.1.0 readme-banner --help
+npx --yes --package github:Dianboxi/dbx-readme#v0.2.0 dbx --help
 ```
 
-GitHub npm 安装需要 Git 和网络。`@readme-banner/cli` 尚未发布，不要把它当成 npm 安装来源。以下示例以本地入口说明目标隔离；Windows 可使用 `C:/work/my-project` 等经 shell 正确引用的路径。
+GitHub npm 安装需要 Git 和网络。`dbx-readme` 是尚未发布到 npm 的包名，不要把它当成 npm 安装来源。以下示例以本地入口说明目标隔离；Windows 可使用 `C:/work/my-project` 等经 shell 正确引用的路径。
 
 ```sh
 # 在目标仓库中创建配置；不会生成图片或编辑 README
-node "/absolute/path/readme-banner/bin/readme-banner.mjs" init --cwd "/absolute/path/my-project" --config "banner.config.json" --preset ascii --theme ocean --title "MY PROJECT" --tagline "Build something useful" --art donut --effect glint
+node "/absolute/path/dbx-readme/bin/dbx.mjs" init --cwd "/absolute/path/my-project" --config "banner.config.json" --preset ascii --theme ocean --title "MY PROJECT" --tagline "Build something useful" --art donut --effect glint
 
 # 默认只生成 assets/banner/banner.light.svg、banner.dark.svg 并输出片段
-node "/absolute/path/readme-banner/bin/readme-banner.mjs" generate --cwd "/absolute/path/my-project" --config "banner.config.json"
+node "/absolute/path/dbx-readme/bin/dbx.mjs" generate --cwd "/absolute/path/my-project" --config "banner.config.json"
 
 # 仅用户授权插入时使用 --readme
-node "/absolute/path/readme-banner/bin/readme-banner.mjs" generate --cwd "/absolute/path/my-project" --config "banner.config.json" --readme "README.md"
+node "/absolute/path/dbx-readme/bin/dbx.mjs" generate --cwd "/absolute/path/my-project" --config "banner.config.json" --readme "README.md"
 
 # 无写入检查：只有传入 --readme，才同时检查该受管块
-node "/absolute/path/readme-banner/bin/readme-banner.mjs" generate --cwd "/absolute/path/my-project" --config "banner.config.json" --readme "README.md" --check
+node "/absolute/path/dbx-readme/bin/dbx.mjs" generate --cwd "/absolute/path/my-project" --config "banner.config.json" --readme "README.md" --check
 ```
 
 `init --force` 会允许覆盖已有配置，不是常规流程，也不应由 agent 自动添加。高级选项通过 JSON 编辑，不存在 `init --font` 或 `init --background` 等标志。`generate --json`、`presets --json`、`themes --json` 提供机器可读输出。
@@ -108,7 +108,7 @@ node "/absolute/path/readme-banner/bin/readme-banner.mjs" generate --cwd "/absol
 - `--cwd` 是本次操作的根目录。默认配置名是 `banner.config.json`；配置路径、输出路径、README 路径均受根目录限制，并检查符号链接逃逸；硬链接数大于 1（`nlink > 1`）的现有文件也会被拒绝。推荐在该根目录下使用清晰的相对路径。
 - 固定文件名为 `<outputDir>/banner.light.svg` 与 `<outputDir>/banner.dark.svg`，不要猜测额外文件名或擅自删除旧目录。
 - 不带 `--readme` 时，只写图片并返回嵌入片段，不扫描并修改所有 README。
-- 显式 `--readme` 授权对已存在的 `.md` 文件的受管块进行插入 / 更新；边界是 `<!-- readme-banner:start -->` 和 `<!-- readme-banner:end -->`，块外保留。完整标记即使出现在同一 README 的代码示例中也会被算作标记，所以不要重复放置演示标记对。标记损坏或重复时应先检查错误，不手工删除无关正文来“修好”生成。
+- 显式 `--readme` 授权对已存在的 `.md` 文件的受管块进行插入 / 更新；边界是 `<!-- readme-banner:start -->` 和 `<!-- readme-banner:end -->`，块外保留。这两个标记是稳定的产物格式，不随产品改名而变化，不要改写它们。完整标记即使出现在同一 README 的代码示例中也会被算作标记，所以不要重复放置演示标记对。标记损坏或重复时应先检查错误，不手工删除无关正文来“修好”生成。
 - 图片 URL 相对于目标 README 所在目录，路径逐段 URI 编码；alt 文本 HTML 转义。优先使用实际生成片段，不手动推算子目录路径或拼接未转义标题。
 - `--check` 不写文件；缺失或过期产物会失败。不要把失败当成“已生成”或为了得到成功结果省略 README 检查。
 - 配置不支持远程用户 SVG、任意代码插件或可执行配置。安装工具本身仍是可信代码执行，与 JSON 配置的数据边界是两回事。

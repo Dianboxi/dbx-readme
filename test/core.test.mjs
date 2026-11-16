@@ -54,7 +54,7 @@ test('supports built-in artwork, animation, bitmap fonts, and background', async
 
 test('lowercase default titles render with every bitmap font; clock art is rejected', async () => {
   for (const font of ['block', 'slim', 'tall', 'bold', 'round', 'wide', 'mixed', 'italic']) {
-    const generated = await generateBanner(base({ title: 'readme-banner', options: { font, effect: 'still' } }), createRegistry());
+    const generated = await generateBanner(base({ title: 'dbx-readme', options: { font, effect: 'still' } }), createRegistry());
     assert.match(generated.files[0].content, /^<svg/);
   }
   for (const art of ['analog-clock', 'digital-clock', 'calendar', 'landscape', 'sundial']) {

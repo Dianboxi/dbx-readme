@@ -6,7 +6,7 @@
 
 ```text
 项目资料 + 品牌约束
-  → readme-banner 的编排 Skill：内容、布局、配色、动画范围
+  → dbx-readme 的编排 Skill：内容、布局、配色、动画范围
   → pxl：低分辨率像素场景 / 图标 / 位图文字
   → pixelfx：可选的独立局部特效
   → 我们的合成器：固定图层、实际深浅背景、最终区域裁剪
@@ -81,7 +81,7 @@
 
 ### 只保留一个对外 Skill
 
-readme-banner Skill 负责整个任务：读仓库→拟定文案与视觉→挑 layout/theme/motif→生成→看图修正→安全更新 README。第三方库是内部工具或可选创作适配器，不要求每个使用者先安装五套 Skill/MCP。
+dbx-readme Skill 负责整个任务：读仓库→拟定文案与视觉→挑 layout/theme/motif→生成→看图修正→安全更新 README。第三方库是内部工具或可选创作适配器，不要求每个使用者先安装五套 Skill/MCP。
 
 ```text
 BannerSpec

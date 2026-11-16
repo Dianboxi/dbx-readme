@@ -1,17 +1,17 @@
 ---
-name: readme-banner
+name: dbx-readme
 description: >-
-  为用户指定的仓库生成配置驱动的浅色和深色 README SVG 横幅，选择 ASCII preset 与独立主题，按明确授权插入或更新 README 受管块。Use when a user asks to create, customize, regenerate, or check a README banner with readme-banner.
+  为用户指定的仓库生成配置驱动的浅色和深色 README SVG 横幅，选择 ASCII preset 与独立主题，按明确授权插入或更新 README 受管块。Use when a user asks to create, customize, regenerate, or check a README banner with dbx-readme.
 ---
 
-# readme-banner
+# dbx-readme
 
 用本地 CLI 生成双主题 SVG；仅在用户明确要求插入 / 更新横幅时编辑 README。配置和具体限制见 [configuration reference](<references/configuration.md>)，不要凭记忆发明 CLI 标志或配置字段。
 
 ## 先确认操作范围
 
-1. **确定目标仓库的绝对路径。** 用户的项目仓库与 readme-banner 工具源码目录可能不同。读取当前工作目录并核对目标项目的 README / 项目元数据；skill 所在目录、工具 checkout、终端默认目录都不自动等于目标。
-2. 如果对目标有歧义，先问用户；不要因为当前目录恰好是 readme-banner 就给工具本身加横幅。只有用户明确选择工具仓库作为目标时才在其中生成配置和图片。
+1. **确定目标仓库的绝对路径。** 用户的项目仓库与 dbx-readme 工具源码目录可能不同。读取当前工作目录并核对目标项目的 README / 项目元数据；skill 所在目录、工具 checkout、终端默认目录都不自动等于目标。
+2. 如果对目标有歧义，先问用户；不要因为当前目录恰好是 dbx-readme 就给工具本身加横幅。只有用户明确选择工具仓库作为目标时才在其中生成配置和图片。
 3. 明确是“只生成资源 / 预览片段”，还是“插入 / 更新指定 README”。**没有明确 README 编辑请求，就绝不传 `--readme`，也不通过其他文件编辑工具代写 README。** 确认文件名，不能自动改写所有语言版本或所有目录下的 README。
 4. 检查已存在的配置、图片、受管块及相关未提交变更。保留无关修改；不要 reset、clean、删除旧资源或替换用户其他文档。已有配置先读取并复用，覆盖需要额外确认，不要习惯性加 `--force`。
 
@@ -36,31 +36,31 @@ description: >-
 2. 验证本地入口：
 
 ```sh
-node "/absolute/path/readme-banner/bin/readme-banner.mjs" --help
+node "/absolute/path/dbx-readme/bin/dbx.mjs" --help
 ```
 
 3. 后续保持本地 Node 入口，始终显式传目标 `--cwd`。即使命令的工作目录是工具 checkout，也不能省略目标隔离。
 
 ### 没有本地 checkout
 
-可使用公开仓库 `abworks-dev/readme-banner` 的固定 Git 标签 `v0.1.0` 入口；这需要 Git、网络，以及用户允许安装 / 运行可信第三方代码：
+可使用公开仓库 `Dianboxi/dbx-readme` 的固定 Git 标签 `v0.2.0` 入口；这需要 Git、网络，以及用户允许安装 / 运行可信第三方代码：
 
 ```sh
-npx --yes --package github:abworks-dev/readme-banner#v0.1.0 readme-banner --help
+npx --yes --package github:Dianboxi/dbx-readme#v0.2.0 dbx --help
 ```
 
-`@readme-banner/cli` 只是尚未发布到 npm 的本地包名，**不要**使用 `npx @readme-banner/cli` 或臆造其他 npm 包。安装失败时报告实际错误，不退回不明来源、最新未知版本或远程 SVG 服务。
+`dbx-readme` 是尚未发布到 npm 的包名，**不要**使用 `npx dbx-readme` 或臆造其他 npm 包。安装失败时报告实际错误，不退回不明来源、最新未知版本或远程 SVG 服务。
 
-若报 `EALLOWGIT`，不要自动修改 npm 全局设置。只有用户已授权安装 / 运行此可信仓库、且组织策略允许时，支持该选项的 npm 才可单次使用 `npx --allow-git=root --yes --package github:abworks-dev/readme-banner#v0.1.0 readme-banner …`。未获授权时先询问；受组织策略限制时停止。旧版 npm 不识别该选项时使用普通命令或经授权的源码安装。
+若报 `EALLOWGIT`，不要自动修改 npm 全局设置。只有用户已授权安装 / 运行此可信仓库、且组织策略允许时，支持该选项的 npm 才可单次使用 `npx --allow-git=root --yes --package github:Dianboxi/dbx-readme#v0.2.0 dbx …`。未获授权时先询问；受组织策略限制时停止。旧版 npm 不识别该选项时使用普通命令或经授权的源码安装。
 
-下面示例使用本地入口；远程入口则将整个 `node …` 前缀替换为上面的完整 `npx --yes --package … readme-banner`，不要改变后续参数语义。
+下面示例使用本地入口；远程入口则将整个 `node …` 前缀替换为上面的完整 `npx --yes --package … dbx`，不要改变后续参数语义。
 
 ## 执行流程：init → generate → check
 
 ### 1. 创建或复用配置
 
 ```sh
-node "/absolute/path/readme-banner/bin/readme-banner.mjs" init --cwd "/absolute/path/target-project" --config "banner.config.json" --preset ascii --theme ocean --title "MY PROJECT" --tagline "Build something useful" --art donut --effect glint
+node "/absolute/path/dbx-readme/bin/dbx.mjs" init --cwd "/absolute/path/target-project" --config "banner.config.json" --preset ascii --theme ocean --title "MY PROJECT" --tagline "Build something useful" --art donut --effect glint
 ```
 
 - `init` **只创建配置**，不产生图片、不修改 README；接下来必须执行 `generate`。
@@ -71,7 +71,7 @@ node "/absolute/path/readme-banner/bin/readme-banner.mjs" init --cwd "/absolute/
 ### 2. 生成资源（默认模式）
 
 ```sh
-node "/absolute/path/readme-banner/bin/readme-banner.mjs" generate --cwd "/absolute/path/target-project" --config "banner.config.json"
+node "/absolute/path/dbx-readme/bin/dbx.mjs" generate --cwd "/absolute/path/target-project" --config "banner.config.json"
 ```
 
 默认在配置的 `outputDir` 下写 `banner.light.svg`、`banner.dark.svg`，并输出 `<picture>` 片段。**此命令不应修改 README。** 用户只要求资源时，到此为止，不把片段偷偷插入 README。
@@ -79,19 +79,19 @@ node "/absolute/path/readme-banner/bin/readme-banner.mjs" generate --cwd "/absol
 ### 3. 只有得到 README 编辑授权才插入
 
 ```sh
-node "/absolute/path/readme-banner/bin/readme-banner.mjs" generate --cwd "/absolute/path/target-project" --config "banner.config.json" --readme "README.md"
+node "/absolute/path/dbx-readme/bin/dbx.mjs" generate --cwd "/absolute/path/target-project" --config "banner.config.json" --readme "README.md"
 ```
 
-`--readme` 只能指定已存在的 `.md` 文件。CLI 维护 `<!-- readme-banner:start -->` 与 `<!-- readme-banner:end -->` 之间的块。检查块外内容保持不变；同一 README 中，即使完整标记出现在代码示例里，也会被保守地视为重复标记，所以不要额外插入演示用标记对。标记异常时调查错误，不删除无关正文或扩大替换范围。使用实际生成片段：URL 应相对于目标 README、逐段 URI 编码，alt 文本应 HTML 转义，不要自行拼未转义 HTML。
+`--readme` 只能指定已存在的 `.md` 文件。CLI 维护 `<!-- readme-banner:start -->` 与 `<!-- readme-banner:end -->` 之间的块（标记字符串是稳定的产物格式，不随产品改名变化，不要改写它们）。检查块外内容保持不变；同一 README 中，即使完整标记出现在代码示例里，也会被保守地视为重复标记，所以不要额外插入演示用标记对。标记异常时调查错误，不删除无关正文或扩大替换范围。使用实际生成片段：URL 应相对于目标 README、逐段 URI 编码，alt 文本应 HTML 转义，不要自行拼未转义 HTML。
 
 ### 4. 检查结果
 
 ```sh
 # 未授权 README 编辑的任务只检查图片
-node "/absolute/path/readme-banner/bin/readme-banner.mjs" generate --cwd "/absolute/path/target-project" --config "banner.config.json" --check
+node "/absolute/path/dbx-readme/bin/dbx.mjs" generate --cwd "/absolute/path/target-project" --config "banner.config.json" --check
 
 # 任务已经明确涉及指定 README 时才同时检查受管块
-node "/absolute/path/readme-banner/bin/readme-banner.mjs" generate --cwd "/absolute/path/target-project" --config "banner.config.json" --readme "README.md" --check
+node "/absolute/path/dbx-readme/bin/dbx.mjs" generate --cwd "/absolute/path/target-project" --config "banner.config.json" --readme "README.md" --check
 ```
 
 - `--check` 不写文件；缺失或过期产物应失败。失败时报告原因，不能忽略退出码或把未运行的检查说成通过。

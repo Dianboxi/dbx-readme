@@ -6,9 +6,9 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
-const bin = fileURLToPath(new URL('../bin/readme-banner.mjs', import.meta.url));
+const bin = fileURLToPath(new URL('../bin/dbx.mjs', import.meta.url));
 const run = (...args) => spawnSync(process.execPath, [bin, ...args], { encoding: 'utf8', timeout: 30_000 });
-const repo = async () => mkdtemp(path.join(tmpdir(), 'readme-banner-test-'));
+const repo = async () => mkdtemp(path.join(tmpdir(), 'dbx-readme-test-'));
 const readConfig = async (root) => JSON.parse(await readFile(path.join(root, 'banner.config.json'), 'utf8'));
 const saveConfig = async (root, value) => writeFile(path.join(root, 'banner.config.json'), JSON.stringify(value));
 const good = (result) => assert.equal(result.status, 0, result.stderr || result.stdout);
@@ -23,11 +23,11 @@ test('default lowercase directory name produces a renderable configuration', asy
 // OS temporary test directories intentionally retained for diagnosis; no project files are removed.
 test('help, version, discovery, and argument failures are useful', () => {
   const help = run('--help'); good(help); assert.match(help.stdout, /generate/);
-  const version = run('--version'); good(version); assert.equal(version.stdout.trim(), '0.1.0');
+  const version = run('--version'); good(version); assert.equal(version.stdout.trim(), '0.2.0');
   assert.equal(JSON.parse(run('presets', '--json').stdout)[0].id, 'ascii');
   assert.equal(JSON.parse(run('themes', '--json').stdout).length, 4);
   for (const args of [['missing'], ['themes', '--title', 'oops'], ['generate', '--typo'], ['init', 'extra'], ['--cwd', '.']]) {
-    const failure = run(...args); assert.equal(failure.status, 1); assert.match(failure.stderr, /readme-banner:/);
+    const failure = run(...args); assert.equal(failure.status, 1); assert.match(failure.stderr, /dbx:/);
   }
 });
 

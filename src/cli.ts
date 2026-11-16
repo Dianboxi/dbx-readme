@@ -7,14 +7,14 @@ import { updateReadme } from './readme.js';
 import { createRegistry } from './index.js';
 import { getTheme, themes } from './themes.js';
 
-export const VERSION = '0.1.0';
-const HELP = `readme-banner ${VERSION} — config-driven README banners
+export const VERSION = '0.2.0';
+const HELP = `dbx ${VERSION} — config-driven README banners
 
 Usage:
-  readme-banner init [--title TEXT] [--preset ascii] [--theme terminal]
-  readme-banner generate [--readme README.md] [--check]
-  readme-banner presets [--json]
-  readme-banner themes [--json]
+  dbx init [--title TEXT] [--preset ascii] [--theme terminal]
+  dbx generate [--readme README.md] [--check]
+  dbx presets [--json]
+  dbx themes [--json]
 
 Global options:
   --cwd PATH          Target repository (defaults to current directory)
@@ -57,9 +57,9 @@ export async function runCli(args: string[], io: CliIO = { out: console.log, err
     if (values.help) { io.out(HELP); return 0; }
     if (values.version) { io.out(VERSION); return 0; }
     if (positionals.length === 0 && args.length === 0) { io.out(HELP); return 0; }
-    if (positionals.length !== 1) throw new Error('Provide exactly one command. Run readme-banner --help.');
+    if (positionals.length !== 1) throw new Error('Provide exactly one command. Run dbx --help.');
     const command = positionals[0];
-    if (!['init', 'generate', 'presets', 'themes'].includes(command ?? '')) throw new Error(`Unknown command "${command}". Run readme-banner --help.`);
+    if (!['init', 'generate', 'presets', 'themes'].includes(command ?? '')) throw new Error(`Unknown command "${command}". Run dbx --help.`);
     const allowed = new Set(['help', 'version', 'json', ...(command === 'init'
       ? ['cwd', 'config', 'title', 'tagline', 'preset', 'theme', 'art', 'effect', 'force']
       : command === 'generate' ? ['cwd', 'config', 'readme', 'check'] : [])]);
@@ -90,7 +90,7 @@ export async function runCli(args: string[], io: CliIO = { out: console.log, err
       const existing = await optionalText(await safePath(root, configPath));
       if (existing !== undefined && !values.force) throw new Error(`Configuration already exists: ${configPath}. Use --force to replace it explicitly.`);
       await applyPlan(root, [{ path: configPath, content: `${JSON.stringify(config, null, 2)}\n` }]);
-      io.out(values.json ? JSON.stringify({ ok: true, command, config: configPath, root }) : `Created ${configPath}\nNext: readme-banner generate --cwd ${JSON.stringify(root)}`);
+      io.out(values.json ? JSON.stringify({ ok: true, command, config: configPath, root }) : `Created ${configPath}\nNext: dbx generate --cwd ${JSON.stringify(root)}`);
       return 0;
     }
     const readmePath = values.readme === undefined ? undefined : relativePath(values.readme);
@@ -115,7 +115,7 @@ export async function runCli(args: string[], io: CliIO = { out: console.log, err
     }
     return values.check && !clean ? 1 : 0;
   } catch (error) {
-    io.err(`readme-banner: ${error instanceof Error ? error.message : String(error)}`);
+    io.err(`dbx: ${error instanceof Error ? error.message : String(error)}`);
     return 1;
   }
 }

@@ -2,7 +2,7 @@
 
 ## ascii.rest 0.4.0
 
-readme-banner 的首个 `ascii` renderer 使用精确版本 **`ascii.rest@0.4.0`**，通过其 banner / SVG 能力与内置 pieces 生成资源。
+dbx-readme 的首个 `ascii` renderer 使用精确版本 **`ascii.rest@0.4.0`**，通过其 banner / SVG 能力与内置 pieces 生成资源。
 
 | 项目 | 信息 |
 | --- | --- |
@@ -12,7 +12,7 @@ readme-banner 的首个 `ascii` renderer 使用精确版本 **`ascii.rest@0.4.0`
 | 作者 / 版权方 | bas3line |
 | 许可 | MIT |
 
-依赖版本见 [package.json](<package.json>) 与 [package-lock.json](<package-lock.json>)。这是对上游的依赖与归属说明，不表示 readme-banner 是上游官方项目或获得其背书。
+依赖版本见 [package.json](<package.json>) 与 [package-lock.json](<package-lock.json>)。这是对上游的依赖与归属说明，不表示 dbx-readme 是上游官方项目或获得其背书。
 
 ### 再分发要求
 
