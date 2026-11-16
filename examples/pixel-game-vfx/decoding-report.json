@@ -12,7 +12,7 @@
     "nativeWrapChangedPixels": 5580,
     "nativeWrapExportIndex": 33,
     "maxOrdinaryAdjacentChangedPixels": 31684,
-    "encodedBytes": 1442184
+    "encodedBytes": 1434911
   },
   "light": {
     "frames": 72,
@@ -27,6 +27,6 @@
     "nativeWrapChangedPixels": 5512,
     "nativeWrapExportIndex": 33,
     "maxOrdinaryAdjacentChangedPixels": 31516,
-    "encodedBytes": 1408060
+    "encodedBytes": 1400761
   }
 }

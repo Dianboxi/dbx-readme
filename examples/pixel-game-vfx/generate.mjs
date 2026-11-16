@@ -87,7 +87,7 @@ function enlarge(img, factor = SCALE) {
   return out;
 }
 function title(img, variant) {
-  const text = 'README-BANNER', scale = 2, x = 27, y = 53;
+  const text = 'DBX-README', scale = 2, x = 27, y = 53;
   for (const ch of text) assert(FONTS.big.glyphs[ch], `Unsupported title glyph: ${ch}`);
   const tw = textWidth(text, 'big') * scale, mask = new Uint8Array(tw * 14);
   rasterText(text, 'big', (gx, gy) => {
