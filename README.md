@@ -205,6 +205,7 @@ node examples/generate-gallery.mjs
 - **研究**：[像素预设设计](<docs/pixel-preset-design.md>) · [工具组合调研与实测](<docs/pixel-toolchain-research.md>) · [pixelfx 画风与像素密度分析](<docs/pixelfx-art-direction-analysis.md>)。这些是设计与研究记录，不等于正式 CLI 功能清单。
 - **示例**：[图片转 ASCII 与遮罩动画](<examples/image-to-ascii/README.md>) · [像素工坊复现](<examples/pixel-game-vfx/README.md>) · [宽幅布局与验证](<examples/pixel-game-vfx/README.md#新版宽幅-readme-构图推荐>)。
 - **字体**：[固定 Fusion 字库、来源与覆盖范围](<examples/pixel-game-vfx/fonts/README.md>) · [OFL 1.1 全文](<examples/pixel-game-vfx/fonts/LICENSE-OFL.txt>)及其中列出的继承许可。
+- **维护**：[发布检查清单](<docs/releasing.md>)（版本、`npm pack` 清单、烟测、回滚与 provenance 边界）。
 
 ## 许可与第三方
 

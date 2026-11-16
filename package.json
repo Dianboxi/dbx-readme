@@ -4,15 +4,21 @@
   "description": "Config-driven README banners with extensible renderers, themes, and agent skills.",
   "type": "module",
   "license": "MIT",
+  "author": "Dianboxi 电波系",
   "engines": { "node": ">=22" },
   "bin": { "dbx": "bin/dbx.mjs" },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
   "files": ["bin", "dist", "skills", "README.md", "LICENSE", "THIRD_PARTY_NOTICES.md"],
+  "sideEffects": false,
+  "publishConfig": { "access": "public" },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "npm run build && node --test test/*.test.mjs",
     "check": "tsc -p tsconfig.json --noEmit",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run check && npm test"
   },
   "repository": { "type": "git", "url": "git+https://github.com/Dianboxi/dbx-readme.git" },
   "homepage": "https://github.com/Dianboxi/dbx-readme#readme",

@@ -1,0 +1,33 @@
+name: Release
+
+# 仅在推送 v* 标签时发布到 npm。
+# 需要先在 npm 包设置里把本 workflow 登记为 trusted publisher（OIDC），
+# 或改为使用 NODE_AUTH_TOKEN secret。准备步骤见 docs/releasing.md。
+on:
+  push:
+    tags: ["v*"]
+permissions:
+  contents: read
+  id-token: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          registry-url: https://registry.npmjs.org
+      - run: npm ci
+      - run: npm run check
+      - run: npm test
+      - name: Verify tag matches package version
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          version="$(node -p "require('./package.json').version")"
+          if [ "$tag" != "$version" ]; then
+            echo "Tag v$tag does not match package.json version $version" >&2
+            exit 1
+          fi
+      - run: npm publish --provenance --access public
