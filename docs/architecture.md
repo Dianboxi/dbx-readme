@@ -2,7 +2,7 @@
 
 ## 产品与范围
 
-dbx-readme 是 Node.js >=22 / TypeScript / ESM 的本地 CLI 与可编程渲染基础设施。目标是把仓库中的 JSON 配置转为可提交的浅色、深色 SVG，并在用户明确指定时维护 README 中的一小块嵌入标记。当前版本为 `v0.2.0`（首个公开版本为 `v0.1.0`），仓库为 [Dianboxi/dbx-readme](https://github.com/Dianboxi/dbx-readme)。
+dbx-readme 是 Node.js >=22 / TypeScript / ESM 的本地 CLI 与可编程渲染基础设施。目标是把仓库中的 JSON 配置转为可提交的浅色、深色 SVG，并在用户明确指定时维护 README 中的一小块嵌入标记。当前版本为 `0.2.1`（`main`；首个公开版本为 `v0.1.0`，最近可用的固定标签为 `v0.2.0`），仓库为 [Dianboxi/dbx-readme](https://github.com/Dianboxi/dbx-readme)。
 
 `ascii` 是第一个 **renderer preset**；`terminal`、`ocean`、`neon`、`minimal` 是独立 **theme**。后续可增加非 ASCII 渲染器，不需要把所有样式硬塞入 ASCII 的选项。
 

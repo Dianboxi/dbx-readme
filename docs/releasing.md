@@ -11,6 +11,12 @@
 
 注意两者的边界：**skills CLI 从 GitHub 读取 skill 目录，不从 npm 包读取。** npm 发布解决的是 CLI 获取问题，不改变 skill 的安装命令。
 
+## 当前发布状态（需先读这段）
+
+- 包版本：`main` 上为 `0.2.1`；已推送的固定标签最近为 `v0.2.0`。
+- npm：`dbx-readme@0.2.0` 曾以**暂存发布**提交（stage id `b48dcb41-d2d9-4d35-abd6-06f6545ef36f`），因 2FA 审批未落地而未上线；registry 上只有占位版本 `0.0.0-stage`。
+- 因此：**在 npm 侧解除阻塞前不要推送 `v0.2.1` 标签**，否则标签触发的 release workflow 会在 `npm publish` 一步失败。解除方式是先 `npm stage approve b48dcb41-…` 或 `npm stage reject b48dcb41-…` 清掉旧暂存，再用 bypass-2FA token 直接发布。
+
 ## 一次性前置
 
 1. 确认包名归属：`npm view dbx-readme version`。首次发布前为 404 属正常。

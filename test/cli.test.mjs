@@ -23,7 +23,7 @@ test('default lowercase directory name produces a renderable configuration', asy
 // OS temporary test directories intentionally retained for diagnosis; no project files are removed.
 test('help, version, discovery, and argument failures are useful', () => {
   const help = run('--help'); good(help); assert.match(help.stdout, /generate/);
-  const version = run('--version'); good(version); assert.equal(version.stdout.trim(), '0.2.0');
+  const version = run('--version'); good(version); assert.equal(version.stdout.trim(), '0.2.1');
   assert.equal(JSON.parse(run('presets', '--json').stdout)[0].id, 'ascii');
   assert.equal(JSON.parse(run('themes', '--json').stdout).length, 4);
   for (const args of [['missing'], ['themes', '--title', 'oops'], ['generate', '--typo'], ['init', 'extra'], ['--cwd', '.']]) {

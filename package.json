@@ -1,6 +1,6 @@
 {
   "name": "dbx-readme",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Config-driven README banners with extensible renderers, themes, and agent skills.",
   "type": "module",
   "license": "MIT",

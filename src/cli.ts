@@ -7,7 +7,7 @@ import { updateReadme } from './readme.js';
 import { createRegistry } from './index.js';
 import { getTheme, themes } from './themes.js';
 
-export const VERSION = '0.2.0';
+export const VERSION = '0.2.1';
 const HELP = `dbx ${VERSION} — config-driven README banners
 
 Usage:
