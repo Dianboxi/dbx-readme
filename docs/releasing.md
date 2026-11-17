@@ -16,7 +16,8 @@
 - 包版本：`main` 上为 `0.2.1`；已推送的固定标签最近为 `v0.2.0`。
 - npm：2026-11-17 已用 `npm stage reject b48dcb41-d2d9-4d35-abd6-06f6545ef36f` 撤回 0.2.0 的暂存发布，registry 上 `dbx-readme` 现为 **404（完全未发布）**，包名重新可用；`npm stage list` 为空。
 - 待办：`0.2.1` 尚未发布。**发布成功后再推 `v0.2.1` 标签**，否则标签触发的 release workflow 会在 `npm publish` 一步失败。
-- 发布方式（passkey 账号不能用 `--otp`）：`npm login --auth-type=web --userconfig <临时配置>` 后 `npm publish --access public --userconfig <临时配置>`，CLI 会打印 `https://www.npmjs.com/auth/cli/<id>` 链接，在浏览器确认即可完成“证明在场”——与 `npm stage reject` 刚才成功的流程相同。
+- 发布方式（passkey 账号不能用 `--otp`）：web 认证实测可行——先 `npm login --auth-type=web --userconfig "$env:TEMP\npm-web.npmrc"`，再 `npm publish --access public --userconfig "$env:TEMP\npm-web.npmrc"`；浏览器确认 `https://www.npmjs.com/auth/cli/<id>` 后 npm 才会真正发起 PUT。注意这会绕开 `.npmrc` 里已有的普通 token，两者不要混用。
+- **已知阻塞（2026-11-17 实测）**：撤回暂存发布会在 registry 留下 unpublished 记录，npm 因此禁止该包名在 **24 小时**内重新发布，PUT 返回 `403 Forbidden - dbx-readme cannot be republished until 24 hours have passed.`。本次撤回发生在 `2026-11-17T09:10:46Z`，最早可重发时间为 **`2026-11-18T09:10:46Z`（北京时间 2026-11-18 17:10）**；在此之前任何重试都会得到同样的 403，不要误判为 token 或权限问题。
 
 ## 一次性前置
 
