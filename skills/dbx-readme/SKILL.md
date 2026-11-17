@@ -21,7 +21,8 @@ metadata:
 1. **确定目标仓库的绝对路径。** 用户的项目仓库与 dbx-readme 工具源码目录可能不同。读取当前工作目录并核对目标项目的 README / 项目元数据；skill 所在目录、工具 checkout、终端默认目录都不自动等于目标。
 2. 如果对目标有歧义，先问用户；不要因为当前目录恰好是 dbx-readme 就给工具本身加横幅。只有用户明确选择工具仓库作为目标时才在其中生成配置和图片。
 3. 明确是“只生成资源 / 预览片段”，还是“插入 / 更新指定 README”。**没有明确 README 编辑请求，就绝不传 `--readme`，也不通过其他文件编辑工具代写 README。** 确认文件名，不能自动改写所有语言版本或所有目录下的 README。
-4. 检查已存在的配置、图片、受管块及相关未提交变更。保留无关修改；不要 reset、clean、删除旧资源或替换用户其他文档。已有配置先读取并复用，覆盖需要额外确认，不要习惯性加 `--force`。
+4. **只描述结果、未指名载体的请求不算 README 编辑授权。** 例如“弄得像样点”“让仓库好看一些”“太素了”这类说法，默认按“只生成资源”处理：先用 `generate`（不带 `--readme`）产出资源，给出插入方案（受管块将插到哪个位置、会替换什么、影响哪几行），再询问是否插入；拿到明确答复后才执行第 3 步。反之，“加到 README 顶部”“换掉现有横幅”属于明确授权。
+5. 检查已存在的配置、图片、受管块及相关未提交变更。保留无关修改；不要 reset、clean、删除旧资源或替换用户其他文档。已有配置先读取并复用，覆盖需要额外确认，不要习惯性加 `--force`。
 
 ## 选择外观
 
@@ -82,7 +83,7 @@ node "/absolute/path/dbx-readme/bin/dbx.mjs" init --cwd "/absolute/path/target-p
 node "/absolute/path/dbx-readme/bin/dbx.mjs" generate --cwd "/absolute/path/target-project" --config "banner.config.json"
 ```
 
-默认在配置的 `outputDir` 下写 `banner.light.svg`、`banner.dark.svg`，并输出 `<picture>` 片段。**此命令不应修改 README。** 用户只要求资源时，到此为止，不把片段偷偷插入 README。
+默认在配置的 `outputDir` 下写 `banner.light.svg`、`banner.dark.svg`，并输出 `<picture>` 片段。**此命令不应修改 README。** 用户只要求资源时，到此为止，不把片段偷偷插入 README；请求只描述观感（“弄像样点”“太素了”）时同样按此处理，先交付资源与插入方案，再等用户点头。
 
 ### 3. 只有得到 README 编辑授权才插入
 
