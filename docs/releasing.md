@@ -27,11 +27,28 @@ npm error 403 Forbidden - PUT https://registry.npmjs.org/dbx-readme
 npm error Two-factor authentication or granular access token with bypass 2fa enabled is required to publish packages.
 ```
 
-这是写入时的二次验证要求，不是包名、权限或组织归属问题；上面的 `prepublishOnly`、38 项测试与打包都已通过，失败只发生在最后的 PUT。三种处理方式：
+这是写入时的二次验证要求，不是包名、权限或组织归属问题；上面的 `prepublishOnly`、38 项测试与打包都已通过，失败只发生在最后的 PUT。四种处理方式：
 
-1. **单次 OTP（最快）**：`npm publish --otp=<6 位代码>`。`prepublishOnly` 会先跑约 13 秒的检查，所以要在命令执行前刚生成代码，避免过期。
-2. **专用 token**：在 npm 网页端创建 Granular Access Token，勾选 **Bypass 2FA**，权限给 `read and write`，并只授权本包；替换 `.npmrc` 中的 `_authToken`。适合需要反复本地发布的场景。
-3. **CI 发布免 token**：先用手工方式发布一次让包存在，之后在 npm 包设置里把 `.github/workflows/release.yml` 登记为 trusted publisher，标签发布即可走 OIDC 并带 provenance，不再需要 OTP 或 token。
+1. **暂存发布（通行密钥账号的唯一可行路径）**：见下一节。上传阶段不需要 2FA，审批在浏览器里用通行密钥完成。
+2. **单次 OTP**：`npm publish --otp=<6 位代码>`。仅适用于用认证器 App（TOTP）的账号；`--otp` 不接受通行密钥。`prepublishOnly` 会先跑约 13 秒的检查，所以要在命令执行前刚生成代码。
+3. **专用 token**：在 npm 网页端创建 Granular Access Token，勾选 **Bypass 2FA**，权限给 `read and write`，并只授权本包；替换 `.npmrc` 中的 `_authToken`。适合需要反复本地发布的场景，但该能力正在收紧。
+4. **CI 发布免 token**：包存在后，在 npm 包设置里把 `.github/workflows/release.yml` 登记为 trusted publisher，标签发布即可走 OIDC 并带 provenance，不再需要 OTP 或 token。
+
+## 暂存发布（无需 TOTP）
+
+npm 的 2FA 可以用通行密钥（passkey / WebAuthn），而 CLI 的 `--otp` 只接受 TOTP 六位码。这种账号无法直接 `npm publish`，改用官方暂存流程：**上传阶段不验证 2FA，把"本人在场"证明推迟到审批时**。
+
+```bash
+npm stage publish             # 上传到暂存区，不需要 2FA
+npm stage list                # 取得 stage-id 与状态
+npm stage view <stage-id>     # 核对版本、tag、access、shasum
+```
+
+然后到 npmjs.com → **Staged Packages** 里审批（用通行密钥确认），或 `npm stage approve <stage-id>`（该命令仍会要求 TOTP，通行密钥账号请走网页）。`npm stage reject <stage-id>` 可撤回暂存。
+
+首次发布新包时，注册表会立刻出现一个占位版本 `0.0.0-stage` 并占用该包名——这是预期行为，不是发布成功。审批通过后目标版本才替换它，`dist-tags` 才会指向真实版本。
+
+要求 npm CLI ≥ 11.15.0 与 Node ≥ 22.14.0。暂存后状态会先显示 `validating`（安全扫描），扫描完成才可审批。
 
 ## 版本号与 tag
 
