@@ -1,7 +1,15 @@
 ---
 name: dbx-readme
 description: >-
-  为用户指定的仓库生成配置驱动的浅色和深色 README SVG 横幅，选择 ASCII preset 与独立主题，按明确授权插入或更新 README 受管块。Use when a user asks to create, customize, regenerate, or check a README banner with dbx-readme.
+  用 JSON 配置为指定仓库生成浅色 / 深色成对的 README SVG 横幅：ASCII preset、独立主题（terminal / ocean / neon / minimal）、可选内置 art 与动画，并可按明确授权写入 README 受管块。
+  Use when a user wants a README banner or header image — 生成、修改、重新生成或校验横幅 / 头图 / 封面，
+  an ASCII art banner, an SVG banner with a dark-mode variant, or to make a repository README look better with a banner.
+license: MIT
+compatibility: 需要 Node.js 22 或更高版本；只有使用 GitHub 标签的 npx 入口时才额外需要 git 与网络。
+metadata:
+  author: Dianboxi 电波系
+  version: "0.2.0"
+  repository: https://github.com/Dianboxi/dbx-readme
 ---
 
 # dbx-readme
@@ -49,7 +57,7 @@ node "/absolute/path/dbx-readme/bin/dbx.mjs" --help
 npx --yes --package github:Dianboxi/dbx-readme#v0.2.0 dbx --help
 ```
 
-`dbx-readme` 是尚未发布到 npm 的包名，**不要**使用 `npx dbx-readme` 或臆造其他 npm 包。安装失败时报告实际错误，不退回不明来源、最新未知版本或远程 SVG 服务。
+`dbx-readme` 目前只通过 GitHub 仓库分发。npm 上只有一个暂存发布留下的空占位版本 `0.0.0-stage`，不可使用。只有在 `npm view dbx-readme versions` 能查到你需要的具体版本（例如 `0.2.0`）时，才可使用 `npx dbx-readme@<该版本>`；只查到 `0.0.0-stage` 时一律视为未发布，**不要**臆造 npm 入口或换用其他包。安装失败时报告实际错误，不退回不明来源、最新未知版本或远程 SVG 服务。
 
 若报 `EALLOWGIT`，不要自动修改 npm 全局设置。只有用户已授权安装 / 运行此可信仓库、且组织策略允许时，支持该选项的 npm 才可单次使用 `npx --allow-git=root --yes --package github:Dianboxi/dbx-readme#v0.2.0 dbx …`。未获授权时先询问；受组织策略限制时停止。旧版 npm 不识别该选项时使用普通命令或经授权的源码安装。
 
