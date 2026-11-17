@@ -17,6 +17,22 @@
 2. 登录：`npm login`，账号需开启 2FA（发布时会要求 OTP）。
 3. 仓库管理员在 npm 上配置 trusted publisher（可选，仅 CI 发布需要）。
 
+## npm 2FA 与发布凭证
+
+账号开启「auth-and-writes」双因素后，用 `.npmrc` 里的普通 token 发布会失败：
+
+```
+npm error code E403
+npm error 403 Forbidden - PUT https://registry.npmjs.org/dbx-readme
+npm error Two-factor authentication or granular access token with bypass 2fa enabled is required to publish packages.
+```
+
+这是写入时的二次验证要求，不是包名、权限或组织归属问题；上面的 `prepublishOnly`、38 项测试与打包都已通过，失败只发生在最后的 PUT。三种处理方式：
+
+1. **单次 OTP（最快）**：`npm publish --otp=<6 位代码>`。`prepublishOnly` 会先跑约 13 秒的检查，所以要在命令执行前刚生成代码，避免过期。
+2. **专用 token**：在 npm 网页端创建 Granular Access Token，勾选 **Bypass 2FA**，权限给 `read and write`，并只授权本包；替换 `.npmrc` 中的 `_authToken`。适合需要反复本地发布的场景。
+3. **CI 发布免 token**：先用手工方式发布一次让包存在，之后在 npm 包设置里把 `.github/workflows/release.yml` 登记为 trusted publisher，标签发布即可走 OIDC 并带 provenance，不再需要 OTP 或 token。
+
 ## 版本号与 tag
 
 - `package.json.version` 与 git tag `v<version>` 必须一致，CI 与文档都依赖这一点。
