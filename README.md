@@ -206,6 +206,7 @@ node examples/generate-gallery.mjs
 - **示例**：[图片转 ASCII 与遮罩动画](<examples/image-to-ascii/README.md>) · [像素工坊复现](<examples/pixel-game-vfx/README.md>) · [宽幅布局与验证](<examples/pixel-game-vfx/README.md#新版宽幅-readme-构图推荐>)。
 - **字体**：[固定 Fusion 字库、来源与覆盖范围](<examples/pixel-game-vfx/fonts/README.md>) · [OFL 1.1 全文](<examples/pixel-game-vfx/fonts/LICENSE-OFL.txt>)及其中列出的继承许可。
 - **维护**：[发布检查清单](<docs/releasing.md>)（版本、`npm pack` 清单、烟测、回滚与 provenance 边界）。
+- **技能**：[Agent 技能架构与触发边界](<docs/skills-architecture.md>)（三个技能的职责分工、触发规则与渐进披露预算；`dbx-topics` 与编排技能目前是设计草案，尚未实现）。
 
 ## 许可与第三方
 
