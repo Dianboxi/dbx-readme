@@ -14,8 +14,9 @@
 ## 当前发布状态（需先读这段）
 
 - 包版本：`main` 上为 `0.2.1`；已推送的固定标签最近为 `v0.2.0`。
-- npm：`dbx-readme@0.2.0` 曾以**暂存发布**提交（stage id `b48dcb41-d2d9-4d35-abd6-06f6545ef36f`），因 2FA 审批未落地而未上线；registry 上只有占位版本 `0.0.0-stage`。
-- 因此：**在 npm 侧解除阻塞前不要推送 `v0.2.1` 标签**，否则标签触发的 release workflow 会在 `npm publish` 一步失败。解除方式是先 `npm stage approve b48dcb41-…` 或 `npm stage reject b48dcb41-…` 清掉旧暂存，再用 bypass-2FA token 直接发布。
+- npm：2026-11-17 已用 `npm stage reject b48dcb41-d2d9-4d35-abd6-06f6545ef36f` 撤回 0.2.0 的暂存发布，registry 上 `dbx-readme` 现为 **404（完全未发布）**，包名重新可用；`npm stage list` 为空。
+- 待办：`0.2.1` 尚未发布。**发布成功后再推 `v0.2.1` 标签**，否则标签触发的 release workflow 会在 `npm publish` 一步失败。
+- 发布方式（passkey 账号不能用 `--otp`）：`npm login --auth-type=web --userconfig <临时配置>` 后 `npm publish --access public --userconfig <临时配置>`，CLI 会打印 `https://www.npmjs.com/auth/cli/<id>` 链接，在浏览器确认即可完成“证明在场”——与 `npm stage reject` 刚才成功的流程相同。
 
 ## 一次性前置
 
