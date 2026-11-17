@@ -30,4 +30,13 @@ jobs:
             echo "Tag v$tag does not match package.json version $version" >&2
             exit 1
           fi
-      - run: npm publish --provenance --access public
+      # 版本已手工发布过时不再重复发，避免标签推送因 EPUBLISHCONFLICT 而变红。
+      - name: Skip when this version is already on npm
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          if npm view "dbx-readme@$version" version >/dev/null 2>&1; then
+            echo "dbx-readme@$version is already published; skipping npm publish."
+            echo "ALREADY_PUBLISHED=1" >> "$GITHUB_ENV"
+          fi
+      - if: env.ALREADY_PUBLISHED != '1'
+        run: npm publish --provenance --access public
