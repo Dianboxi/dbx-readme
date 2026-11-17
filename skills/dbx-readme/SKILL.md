@@ -74,6 +74,7 @@ node "/absolute/path/dbx-readme/bin/dbx.mjs" init --cwd "/absolute/path/target-p
 
 - `init` **只创建配置**，不产生图片、不修改 README；接下来必须执行 `generate`。
 - 已有配置时，先读取再按用户意图最小化修改，或直接复用；不要自动用 `--force` 重建。不需要副标题或 art 时省略对应参数。
+- **输出目录跟随用户点名的位置，不要自作主张加一层。** 用户没提位置时用默认 `assets/banner`；用户说了放哪里（“放 `assets` 里就行”“放到 `docs/images` 下”）就把 `outputDir` 设成那个目录本身——「放 assets 里」对应 `assets`，而不是 `assets/banner`。用户点名的是“放哪儿”，多套一层就变成他没要求的路径，之后要挪动、要解释都得返工。文件名仍固定为 `banner.light.svg`、`banner.dark.svg`，README 片段里的相对路径会跟着 `outputDir` 走，所以不需要为此改文件名或手拼 URL。
 - 字体、颜色、阴影、位置、速度、背景等通过 JSON 的已支持字段设置。先读 [配置参考](<references/configuration.md>)，不要发明 `init --font` 等选项。
 - 配置只能是 JSON；不创建执行代码的配置，不安装任意配置插件，不拉取或注入用户提供的远程 SVG。
 
