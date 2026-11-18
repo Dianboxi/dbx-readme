@@ -52,15 +52,22 @@ node "/absolute/path/dbx-readme/bin/dbx.mjs" --help
 
 ### 没有本地 checkout
 
-可使用公开仓库 `Dianboxi/dbx-readme` 的固定 Git 标签 `v0.2.0` 入口；这需要 Git、网络，以及用户允许安装 / 运行可信第三方代码：
+优先用 npm 上的固定版本（bin 名 `dbx`）：
 
 ```sh
-npx --yes --package github:Dianboxi/dbx-readme#v0.2.0 dbx --help
+npm view dbx-readme versions
+npx --yes dbx-readme@<上面列出的版本> --help
 ```
 
-`dbx-readme` 目前只通过 GitHub 仓库分发：npm 上**没有任何已发布版本**（此前的占位版本 `0.0.0-stage` 已被撤回，查询结果为 404），因此 `npx dbx-readme` 不可使用。只有在 `npm view dbx-readme versions` 能查到你需要的具体版本（例如 `0.2.1`）时，才可使用 `npx dbx-readme@<该版本>`；查不到时一律视为未发布，**不要**臆造 npm 入口或换用其他包。安装失败时报告实际错误，不退回不明来源、最新未知版本或远程 SVG 服务。
+`dbx-readme@0.2.1` 已于 2026-11-18 发布。**只使用 `npm view dbx-readme versions` 实际列出的版本**；查不到就视为未发布，不要臆造版本、不要用裸 `npx dbx-readme`，也不退回不明来源或远程 SVG 服务。安装失败时报告实际错误。
 
-若报 `EALLOWGIT`，不要自动修改 npm 全局设置。只有用户已授权安装 / 运行此可信仓库、且组织策略允许时，支持该选项的 npm 才可单次使用 `npx --allow-git=root --yes --package github:Dianboxi/dbx-readme#v0.2.0 dbx …`。未获授权时先询问；受组织策略限制时停止。旧版 npm 不识别该选项时使用普通命令或经授权的源码安装。
+需要审计源码或 registry 不可达时，改用公开仓库的固定标签（需要 Git、网络，以及用户允许安装 / 运行可信第三方代码）：
+
+```sh
+npx --yes --package github:Dianboxi/dbx-readme#v0.2.1 dbx --help
+```
+
+若报 `EALLOWGIT`，不要自动修改 npm 全局设置。只有用户已授权安装 / 运行此可信仓库、且组织策略允许时，支持该选项的 npm 才可单次使用 `npx --allow-git=root --yes --package github:Dianboxi/dbx-readme#v0.2.1 dbx …`。未获授权时先询问；受组织策略限制时停止。旧版 npm 不识别该选项时使用普通命令或经授权的源码安装。
 
 下面示例使用本地入口；远程入口则将整个 `node …` 前缀替换为上面的完整 `npx --yes --package … dbx`，不要改变后续参数语义。
 

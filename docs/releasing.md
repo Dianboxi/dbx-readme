@@ -13,11 +13,15 @@
 
 ## 当前发布状态（需先读这段）
 
-- 包版本：`main` 上为 `0.2.1`；已推送的固定标签最近为 `v0.2.0`。
-- npm：2026-11-17 已用 `npm stage reject b48dcb41-d2d9-4d35-abd6-06f6545ef36f` 撤回 0.2.0 的暂存发布，registry 上 `dbx-readme` 现为 **404（完全未发布）**，包名重新可用；`npm stage list` 为空。
-- 待办：`0.2.1` 尚未发布。**发布成功后再推 `v0.2.1` 标签**，否则标签触发的 release workflow 会在 `npm publish` 一步失败。
+- 包版本：`main` 上为 `0.2.1`；固定标签 `v0.2.1` 指向 `1682f7c`，即产出 npm 包的同一提交。
+- npm：**`dbx-readme@0.2.1` 已发布**（`2026-11-18T09:32:26Z` 生效，`dist-tags.latest` 指向它）。干净目录里 `npx --yes dbx-readme@0.2.1 --version` 返回 `0.2.1`。
+- 分发分工：CLI 走 npm；skill 仍从 GitHub 读取（`npx skills add Dianboxi/dbx-readme --skill dbx-readme`）。推送 `v0.2.1` 后 `release.yml` 会因“该版本已存在”跳过 `npm publish`（守卫步骤见工作流）；历史标签 `v0.1.0`、`v0.2.0` 保持不动。
+- 遗留：registry 上仍留着一个 `0.0.0-stage` 版本记录（暂存发布产物，不是 `latest`）。可用 `npm deprecate dbx-readme@0.0.0-stage "staged placeholder; use 0.2.1"` 标注，避免有人手滑固定它。
 - 发布方式（passkey 账号不能用 `--otp`）：web 认证实测可行——先 `npm login --auth-type=web --userconfig "$env:TEMP\npm-web.npmrc"`，再 `npm publish --access public --userconfig "$env:TEMP\npm-web.npmrc"`；浏览器确认 `https://www.npmjs.com/auth/cli/<id>` 后 npm 才会真正发起 PUT。注意这会绕开 `.npmrc` 里已有的普通 token，两者不要混用。
-- **已知阻塞（2026-11-17 实测）**：撤回暂存发布会在 registry 留下 unpublished 记录，npm 因此禁止该包名在 **24 小时**内重新发布，PUT 返回 `403 Forbidden - dbx-readme cannot be republished until 24 hours have passed.`。本次撤回发生在 `2026-11-17T09:10:46Z`，最早可重发时间为 **`2026-11-18T09:10:46Z`（北京时间 2026-11-18 17:10）**；在此之前任何重试都会得到同样的 403，不要误判为 token 或权限问题。
+- **过往阻塞·已解除（2026-11-17 实测）**：撤回暂存发布会在 registry 留下 unpublished 记录，npm 因此禁止该包名在 **24 小时**内重新发布，PUT 返回 `403 Forbidden - dbx-readme cannot be republished until 24 hours have passed.`。本次撤回发生在 `2026-11-17T09:10:46Z`，最早可重发时间为 **`2026-11-18T09:10:46Z`（北京时间 2026-11-18 17:10）**；在此之前任何重试都会得到同样的 403，不要误判为 token 或权限问题。
+
+- **过往阻塞·墓碑（2026-11-18 实测）**：冷却结束后首次重发仍可能返回 `E409 Conflict - Failed to save packument`——registry 上该文档 `versions` 为空、只剩 `time.unpublished` 记录。重试一次即成功（第二次返回 `+ dbx-readme@0.2.1` 与“being processed”提示，约 2 分钟后 packument 才出现新版本）。**不要为此升版本号**（阻塞在名字层），也不要连续重试。
+- **认证失败会被伪装成 404**：`npm whoami` 返回 401 时，`PUT` 表现为 `404 Not Found - PUT https://registry.npmjs.org/dbx-readme`。先跑 `npm whoami --userconfig …` 确认登录，再判断是不是包名问题。
 
 ## 一次性前置
 

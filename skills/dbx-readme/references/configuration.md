@@ -79,13 +79,20 @@ ASCII 大标题支持所选内置字体的字母、数字、空格以及这些�
 node "/absolute/path/dbx-readme/bin/dbx.mjs" --help
 ```
 
-从 GitHub 的固定标签 `v0.2.0` 运行，完整入口为：
+npm 上已发布固定版本，优先用它（bin 名 `dbx`）：
 
 ```sh
-npx --yes --package github:Dianboxi/dbx-readme#v0.2.0 dbx --help
+npm view dbx-readme versions
+npx --yes dbx-readme@0.2.1 --help
 ```
 
-GitHub npm 安装需要 Git 和网络。`dbx-readme` 是尚未发布到 npm 的包名，不要把它当成 npm 安装来源。以下示例以本地入口说明目标隔离；Windows 可使用 `C:/work/my-project` 等经 shell 正确引用的路径。
+只用 `npm view` 实际列出的版本；查不到就别用裸 `npx dbx-readme`，也不要臆造版本。需要审计源码或 registry 不可达时，改用 GitHub 的固定标签：
+
+```sh
+npx --yes --package github:Dianboxi/dbx-readme#v0.2.1 dbx --help
+```
+
+GitHub 入口需要 Git 和网络。以下示例以本地入口说明目标隔离；Windows 可使用 `C:/work/my-project` 等经 shell 正确引用的路径。
 
 ```sh
 # 在目标仓库中创建配置；不会生成图片或编辑 README

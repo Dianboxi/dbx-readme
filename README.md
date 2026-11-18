@@ -17,14 +17,14 @@
 
 | 能力 | 当前状态 | 使用方式 |
 | --- | --- | --- |
-| ASCII 横幅 | **已可用**，`v0.2.0` 唯一注册的 CLI preset | `--preset ascii`；输出两张 SVG，保留原生动画 |
+| ASCII 横幅 | **已可用**，唯一注册的 CLI preset | `--preset ascii`；输出两张 SVG，保留原生动画 |
 | 四套 ASCII 主题 | **已可用** | `terminal` / `ocean` / `neon` / `minimal`，支持自定义标题颜色 |
-| 中文 / 中英混排像素横幅 | **实验性、可复现样例**，未注册到 CLI、不在 `v0.2.0` 中 | 独立生成脚本；**不能使用 `--preset pixel`** |
+| 中文 / 中英混排像素横幅 | **实验性、可复现样例**，未注册到 CLI，`v0.2.1` 里也没有 | 独立生成脚本；**不能使用 `--preset pixel`** |
 | 图片转 ASCII、正面遮罩动画 | **独立样例**，不是现有 CLI 配置选项 | [转换与遮罩说明](<examples/image-to-ascii/README.md>) |
 
 `preset` 决定布局与渲染方式，`theme` 决定配色，两者不是一回事。本项目提供本地 CLI、程序化扩展接口和可移植 skill，不提供托管服务、GitHub Action 或 MCP 服务。
 
-由 [Dianboxi](https://github.com/Dianboxi) 维护，仓库为 [Dianboxi/dbx-readme](https://github.com/Dianboxi/dbx-readme)。本文展示当前仓库内容；固定标签 `v0.2.0` 的代码不因后续样例更新而改变。`dbx-readme` **尚未发布到 npm**。
+由 [Dianboxi](https://github.com/Dianboxi) 维护，仓库为 [Dianboxi/dbx-readme](https://github.com/Dianboxi/dbx-readme)。本文展示当前仓库内容；固定标签 `v0.2.1` 的代码不因后续样例更新而改变。CLI 已发布到 npm：`dbx-readme@0.2.1`。
 
 ## 预设预览
 
@@ -98,7 +98,7 @@
 
 ## 快速开始
 
-**CLI 需要 Node.js ≥22 与 npm。** 独立像素原型的源码工具链需要 **Node.js ≥22.18，推荐 Node 24**，并需准备固定上游检出；不要把原型要求或样例脚本当作 `v0.2.0` CLI 安装步骤。
+**CLI 需要 Node.js ≥22 与 npm。** 独立像素原型的源码工具链需要 **Node.js ≥22.18，推荐 Node 24**，并需准备固定上游检出；不要把原型要求或样例脚本当作 `v0.2.1` CLI 安装步骤。
 
 ### 本地源码运行
 
@@ -127,22 +127,34 @@ node bin/dbx.mjs generate --cwd "../my-project" --readme "README.md" --check
 
 把 `../my-project` 换成自己的目标目录，按所用 shell 正确引用路径与文本；不要把不可信输入拼成命令。嵌入 URL 相对于目标文档所在目录计算，应使用实际生成片段，不手动照抄其他目录的路径。
 
+### 从 npm 运行
+
+已发布的 CLI 版本是 `dbx-readme@0.2.1`，bin 名是 `dbx`：
+
+```sh
+npx --yes dbx-readme@0.2.1 --help
+npx --yes dbx-readme@0.2.1 init --cwd "../my-project" --theme ocean --title "MY PROJECT"
+npx --yes dbx-readme@0.2.1 generate --cwd "../my-project"
+```
+
+固定版本号而不是写裸 `npx dbx-readme`：版本可审计、结果可复现，`latest` 将来指向别处时也不会悄悄换掉渲染器。
+
 ### 从 GitHub 固定标签运行
 
 需要本机 Git，首次安装需要网络；固定标签只固定工具代码，安装仍可能执行依赖与构建脚本，应只运行信任的来源。
 
 ```sh
-npx --yes --package github:Dianboxi/dbx-readme#v0.2.0 dbx --help
-npx --yes --package github:Dianboxi/dbx-readme#v0.2.0 dbx init --cwd "../my-project" --theme ocean --title "MY PROJECT"
-npx --yes --package github:Dianboxi/dbx-readme#v0.2.0 dbx generate --cwd "../my-project"
+npx --yes --package github:Dianboxi/dbx-readme#v0.2.1 dbx --help
+npx --yes --package github:Dianboxi/dbx-readme#v0.2.1 dbx init --cwd "../my-project" --theme ocean --title "MY PROJECT"
+npx --yes --package github:Dianboxi/dbx-readme#v0.2.1 dbx generate --cwd "../my-project"
 ```
 
-需要编辑目标文档时才为最后一条添加 `--readme "README.md"`。不要使用 `npx dbx-readme`，该包尚未发布。
+需要编辑目标文档时才为最后一条添加 `--readme "README.md"`。固定标签适合审计源码、或 registry 不可达时使用；能访问 npm 时优先用上一节的固定版本。两者产出的资源与嵌入片段一致。
 
 若 npm 报 `EALLOWGIT`，**仅在用户已授权运行此可信仓库、且组织策略允许时**，支持该选项的 npm 可为单次命令添加：
 
 ```sh
-npx --allow-git=root --yes --package github:Dianboxi/dbx-readme#v0.2.0 dbx --help
+npx --allow-git=root --yes --package github:Dianboxi/dbx-readme#v0.2.1 dbx --help
 ```
 
 后续 `init` / `generate` 同样将选项放在 `npx` 后。**不要修改全局 npm 配置放开 Git 来源**；未授权或策略禁止时停止询问。旧版 npm 不支持该选项时，使用普通命令或经授权的源码安装。
