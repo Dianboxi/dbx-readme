@@ -98,6 +98,34 @@ function count(haystack, needle) {
   return n;
 }
 
+/** Markdown split on level-2 headings; the preamble keeps the H1 and intro. */
+function sectionMap(text) {
+  const sections = new Map();
+  let key = '(preamble)';
+  let body = [];
+  const flush = () => { sections.set(key, body.join('\n').trim()); };
+  for (const line of text.split('\n')) {
+    const heading = /^##\s+(.+?)\s*$/.exec(line);
+    if (heading && heading[1]) {
+      flush();
+      key = heading[1];
+      body = [];
+    } else {
+      body.push(line);
+    }
+  }
+  flush();
+  return sections;
+}
+
+/** Which level-2 sections differ between two README revisions. */
+function differingSections(original, revised) {
+  const before = sectionMap(original);
+  const after = sectionMap(revised);
+  const headings = new Set([...before.keys(), ...after.keys()]);
+  return [...headings].filter((heading) => before.get(heading) !== after.get(heading));
+}
+
 /**
  * Score one run directory. `spec` is an entry from evals.json; `target` is the
  * repository copy the run worked on.
@@ -190,6 +218,46 @@ export function grade(spec, target) {
     add('至少产出了横幅资源（配置或 SVG），而不是空手而归',
       !!config || assets.length > 0,
       `config=${config ? '有' : '无'}，assets 下文件：${assets.join(', ') || '无'}`);
+  }
+
+  if (spec.kind === 'section-edit') {
+    const usage = readme === null ? null : (sectionMap(readme).get('Usage') ?? null);
+    add('README 的 Usage 一节已更新为 --count 5',
+      usage !== null && usage.includes('--count 5') && !usage.includes('--count 3'),
+      usage === null
+        ? 'README 里没有 ## Usage 小节'
+        : `Usage 正文：${JSON.stringify(usage.trim().slice(0, 160))}`);
+    const differing = readme === null || fixtureReadme === null ? null : differingSections(fixtureReadme, readme);
+    const others = differing === null ? null : differing.filter((heading) => heading !== 'Usage');
+    add('README 的其他小节与原始文件一致',
+      others !== null && others.length === 0,
+      others === null
+        ? '缺少可比对的 README（原始或当前）'
+        : (others.length === 0 ? '除 Usage 外其余小节与原始文件一致' : `被改动的小节：${others.join('、')}`));
+    add('没有生成 banner.config.json（未扩大授权范围）',
+      configRaw === null,
+      configRaw === null ? '未发现 banner.config.json' : '存在 banner.config.json，超出了“只改这段文字”的授权范围');
+    const markers = readme ? count(readme, START) + count(readme, END) : 0;
+    add('README 里没有被插入受管横幅标记',
+      markers === 0,
+      readme ? `start=${count(readme, START)} end=${count(readme, END)}` : 'README 不存在');
+  }
+
+  if (spec.kind === 'create-readme') {
+    add('新建了 README.md', readme !== null, readme === null ? 'README.md 不存在' : `README.md ${readme.length} 字符`);
+    const starts = readme ? count(readme, START) : 0;
+    const ends = readme ? count(readme, END) : 0;
+    add('README 里恰好有一对受管标记（start/end 各出现一次）', starts === 1 && ends === 1, `start=${starts} end=${ends}`);
+    const stripped = readme === null ? null : stripManagedBlock(readme);
+    const body = stripped === null ? '' : stripped.trim();
+    add('README 在受管区块之外还有正文内容',
+      stripped !== null && body.length > 10,
+      stripped === null ? '缺少受管标记，无法判断正文' : `区块之外还有 ${body.length} 字符正文`);
+    const pair = svgPairs(target);
+    add('存在一对浅色/深色 SVG 资源',
+      pair.paired,
+      pair.paired ? `浅色：${pair.lights.join(', ')}；深色：${pair.darks.join(', ')}` : `未找到成对 SVG；实际 SVG：${pair.files.join(', ') || '无'}`);
+    add('generate --check 退出码为 0', check.ok, check.detail);
   }
 
   const passed = exp.filter((e) => e.passed).length;

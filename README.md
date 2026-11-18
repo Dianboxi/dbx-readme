@@ -19,10 +19,11 @@
 | --- | --- | --- |
 | ASCII 横幅 | **已可用**，唯一注册的 CLI preset | `--preset ascii`；输出两张 SVG，保留原生动画 |
 | 四套 ASCII 主题 | **已可用** | `terminal` / `ocean` / `neon` / `minimal`，支持自定义标题颜色 |
-| 中文 / 中英混排像素横幅 | **实验性、可复现样例**，未注册到 CLI，`v0.2.2` 里也没有 | 独立生成脚本；**不能使用 `--preset pixel`** |
+| 中文 / 中英混排像素横幅 | **实验性、可复现样例**，未注册到 CLI，已发布版本里也没有 | 独立生成脚本；**不能使用 `--preset pixel`** |
 | 图片转 ASCII、正面遮罩动画 | **独立样例**，不是现有 CLI 配置选项 | [转换与遮罩说明](<examples/image-to-ascii/README.md>) |
+| 仓库 description / topics | **已可用（`0.3.0`）**，需要本机已登录的 `gh` | `dbx topics get\|plan\|apply`；写入前先给计划、再要授权 |
 
-`preset` 决定布局与渲染方式，`theme` 决定配色，两者不是一回事。本项目提供本地 CLI、程序化扩展接口和可移植 skill，不提供托管服务、GitHub Action 或 MCP 服务。
+`preset` 决定布局与渲染方式，`theme` 决定配色，两者不是一回事。本项目提供本地 CLI（README 横幅 + 仓库 description/topics）、程序化扩展接口和三个可移植 skill，不提供托管服务、GitHub Action 或 MCP 服务。
 
 由 [Dianboxi](https://github.com/Dianboxi) 维护，仓库为 [Dianboxi/dbx-readme](https://github.com/Dianboxi/dbx-readme)。本文展示当前仓库内容；固定标签 `v0.2.2` 的代码不因后续样例更新而改变。CLI 已发布到 npm（`dbx-readme`，固定版本安装见下）。
 
@@ -129,7 +130,7 @@ node bin/dbx.mjs generate --cwd "../my-project" --readme "README.md" --check
 
 ### 从 npm 运行
 
-当前已发布的 CLI 版本是 `dbx-readme@0.2.2`，bin 名是 `dbx`：
+npm 上已发布的最新版本是 `dbx-readme@0.2.2`，bin 名是 `dbx`（`main` 上的 `0.3.0` 新增了 `dbx topics`，尚未发布）：
 
 ```sh
 npx --yes dbx-readme@0.2.2 --help
@@ -158,6 +159,18 @@ npx --allow-git=root --yes --package github:Dianboxi/dbx-readme#v0.2.2 dbx --hel
 ```
 
 后续 `init` / `generate` 同样将选项放在 `npx` 后。**不要修改全局 npm 配置放开 Git 来源**；未授权或策略禁止时停止询问。旧版 npm 不支持该选项时，使用普通命令或经授权的源码安装。
+
+### 仓库元数据（description 与 topics）
+
+`0.3.0` 起 CLI 也能盘点并改写 GitHub 仓库的简介与话题标签。写入走 `gh`，需要该账号对目标仓库有管理权限：
+
+```sh
+dbx topics get   --cwd "../my-project"          # 只读
+dbx topics plan  --cwd "../my-project" --json   # 算差异
+dbx topics apply --cwd "../my-project" --yes    # 用户确认计划后才执行
+```
+
+目标元数据写在目标仓库的 `presentation.config.json`。`topics` 缺省表示保留现状（只应用 `remove` 里点名的标签），显式给出（含 `[]`）才覆盖整个标签集；`description` 缺省表示不改。限制与 GitHub 一致：标签为小写字母/数字/连字符、单个 ≤50 字符、总数 ≤20。
 
 ## 配置与安全
 
@@ -199,6 +212,12 @@ npx --allow-git=root --yes --package github:Dianboxi/dbx-readme#v0.2.2 dbx --hel
 npx skills add Dianboxi/dbx-readme --skill dbx-readme
 ```
 
+同仓库还提供 `dbx-topics`（仓库简介与话题标签）与 `dbx-presentation`（多表面编排）：
+
+```sh
+npx skills add Dianboxi/dbx-readme --skill dbx-topics --skill dbx-presentation
+```
+
 安装 skill 不会自动生成横幅。请说明目标仓库、标题、主题，以及是否授权插入文档。默认流程先 `init` 后 `generate`，不自动编辑文档、不提交、不推送、不发布，保留无关改动。
 
 ## 开发与研究
@@ -218,8 +237,8 @@ node examples/generate-gallery.mjs
 - **示例**：[图片转 ASCII 与遮罩动画](<examples/image-to-ascii/README.md>) · [像素工坊复现](<examples/pixel-game-vfx/README.md>) · [宽幅布局与验证](<examples/pixel-game-vfx/README.md#新版宽幅-readme-构图推荐>)。
 - **字体**：[固定 Fusion 字库、来源与覆盖范围](<examples/pixel-game-vfx/fonts/README.md>) · [OFL 1.1 全文](<examples/pixel-game-vfx/fonts/LICENSE-OFL.txt>)及其中列出的继承许可。
 - **维护**：[发布检查清单](<docs/releasing.md>)（版本、`npm pack` 清单、烟测、回滚与 provenance 边界）。
-- **技能**：[Agent 技能架构与触发边界](<docs/skills-architecture.md>)（三个技能的职责分工、触发规则与渐进披露预算；`dbx-topics` 与编排技能目前是设计草案，尚未实现）。
-- **评测**：[技能评测与回归](<evals/README.md>)（三个边界场景、机械打分器、参考执行与 CI 门禁；CI 检验流程契约，真实 agent 行为需本地跑）。
+- **技能**：[Agent 技能架构与触发边界](<docs/skills-architecture.md>)（`dbx-readme` / `dbx-topics` / `dbx-presentation` 的职责分工、触发规则与渐进披露预算；三个技能均已落盘）。
+- **评测**：[技能评测与回归](<evals/README.md>)（五个边界场景、机械打分器、参考执行与 CI 门禁；CI 检验流程契约，真实 agent 行为需本地跑）。
 
 ## 许可与第三方
 

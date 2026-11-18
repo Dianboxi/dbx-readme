@@ -8,7 +8,7 @@ license: MIT
 compatibility: 需要 Node.js 22 或更高版本；只有使用 GitHub 标签的 npx 入口时才额外需要 git 与网络。
 metadata:
   author: Dianboxi 电波系
-  version: "0.2.2"
+  version: "0.3.0"
   repository: https://github.com/Dianboxi/dbx-readme
 ---
 

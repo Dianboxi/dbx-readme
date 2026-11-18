@@ -49,6 +49,37 @@
         "package.json 与 src/index.js 等源码文件未被改动",
         "至少产出了横幅资源（配置或 SVG），而不是空手而归"
       ]
+    },
+    {
+      "id": 3,
+      "slug": "eval-3-section-scoped-text-edit",
+      "kind": "section-edit",
+      "fixture": "proj-basic",
+      "prompt": "README 里 Usage 那段过时了：`acme widget --count 3` 现在默认就是 5。帮我把 README 改对，其他别动。",
+      "expected_output": "只改 README 的 Usage 一节（--count 3 → --count 5），不生成横幅、不加受管标记、不改其他小节或其他文件。",
+      "files": [],
+      "expectations": [
+        "README 的 Usage 一节已更新为 --count 5",
+        "README 的其他小节与原始文件一致",
+        "没有生成 banner.config.json（未扩大授权范围）",
+        "README 里没有被插入受管横幅标记"
+      ]
+    },
+    {
+      "id": 4,
+      "slug": "eval-4-readme-created-from-scratch",
+      "kind": "create-readme",
+      "fixture": "proj-empty",
+      "prompt": "这个仓库还没有 README，帮我建一个，并在顶部加个横幅，深色浅色都要。",
+      "expected_output": "新建 README.md 并写入正文，插入一对受管标记包裹的横幅块；生成配置与成对 SVG，--check 幂等通过。",
+      "files": [],
+      "expectations": [
+        "新建了 README.md",
+        "README 里恰好有一对受管标记（start/end 各出现一次）",
+        "README 在受管区块之外还有正文内容",
+        "存在一对浅色/深色 SVG 资源",
+        "generate --check 退出码为 0"
+      ]
     }
   ]
 }

@@ -1,6 +1,6 @@
 # Agent 技能架构与触发边界
 
-本文把 [Agent Skills 规范](https://agentskills.io/specification) 中与本项目相关的约束，翻译成三个技能的具体设计与硬规则：`dbx-readme`（已发布）、`dbx-topics`（设计草案，CLI 未实现）、`dbx-presentation`（编排草案）。**草案不等于已实现功能**：`skills/` 目录下目前只有 `dbx-readme`，另外两个的正文只在本文第 5 节以代码块给出，避免发布一个会调用不存在命令的技能。
+本文把 [Agent Skills 规范](https://agentskills.io/specification) 中与本项目相关的约束，翻译成三个技能的具体设计与硬规则：`dbx-readme`（已发布）、`dbx-topics`（`0.3.0` 起已落盘，依赖 `dbx topics` 子命令）、`dbx-presentation`（多表面编排，已落盘）。三个技能的正文都在 `skills/` 下；第 5 节保留 frontmatter 原文作为对照，改动技能时两边一起改。
 
 ## 1. 为什么需要一份分工文档
 
@@ -48,13 +48,13 @@ skills/dbx-readme/          # 已发布
 └── references/
     └── configuration.md    # 配置字段、ASCII 选项、路径契约
 
-skills/dbx-topics/          # 草案
+skills/dbx-topics/          # 已落盘（0.3.0）
 ├── SKILL.md                # 目标 ≤110 行
 └── references/
     ├── metadata-rules.md   # GitHub 侧格式限制与端点差异
     └── proposal-pattern.md # 如何给出可审阅的差异建议
 
-skills/dbx-presentation/    # 草案
+skills/dbx-presentation/    # 已落盘（0.3.0）
 ├── SKILL.md                # 目标 ≤130 行，只写编排与授权
 └── references/
     └── routing.md          # 表面 × 技能矩阵、失败与部分成功的处理
@@ -62,7 +62,7 @@ skills/dbx-presentation/    # 草案
 
 预算纪律：新增技能先估正文 token（CJK 约 1 字 ≈ 1 token），超过 4000 就先拆分，不要等到客户端截断。
 
-## 5. frontmatter 草案
+## 5. frontmatter（已落盘，此处为对照）
 
 ### 5.1 `dbx-topics`
 
@@ -104,7 +104,7 @@ metadata:
 ---
 ```
 
-## 6. `dbx-topics` 的 CLI 契约（未实现，接口草案）
+## 6. `dbx-topics` 的 CLI 契约（0.3.0 已实现）
 
 技能正文不臆造命令。契约先行，实现跟上；在实现之前以第 6.3 节的能力闸门处理。
 
@@ -178,10 +178,10 @@ dbx topics apply --cwd <repo> [--dry-run] [--json]     # 写入；--dry-run 与 
 
 ## 10. 落地顺序
 
-1. `dbx-readme` 技能元数据补齐（已随本次改动落地）。
-2. 实现 `dbx topics` 子命令与 `presentation.config.json` 校验，先有 `--check`，再有写入。
-3. 落盘 `skills/dbx-topics/`（正文按第 5.1 节，能力闸门按第 6.3 节）。
-4. 落盘 `skills/dbx-presentation/`，仅在其中引用前两个技能，不复制流程。
+1. `dbx-readme` 技能元数据补齐（已落地）。
+2. 实现 `dbx topics` 子命令与 `presentation.config.json` 校验（已落地，`0.3.0`）。
+3. 落盘 `skills/dbx-topics/`（已落地，能力闸门写在技能第 2 节）。
+4. 落盘 `skills/dbx-presentation/`（已落地，只引用前两个技能，不复制流程）。
 5. 每次落盘后跑第 9 节清单；三个技能同时存在时，重做一次路由矩阵（第 3 节）并复核 description 有无重叠。
 
 ## Related Documents

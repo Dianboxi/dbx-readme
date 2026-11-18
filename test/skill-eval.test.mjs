@@ -7,7 +7,7 @@
 
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { cpSync, existsSync, mkdtempSync, readFileSync, rmSync, statSync } from 'node:fs';
+import { cpSync, existsSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
@@ -120,7 +120,7 @@ test('evals.json is well-formed and every eval is runnable', () => {
   assert.ok(evals.length >= 3, 'keep at least the three core evals');
 
   const ids = new Set();
-  const kinds = new Set(['insert', 'assets', 'vague']);
+  const kinds = new Set(['insert', 'assets', 'vague', 'section-edit', 'create-readme']);
   for (const spec of evals) {
     assert.ok(!ids.has(spec.id), `duplicate eval id: ${spec.id}`);
     ids.add(spec.id);
@@ -128,8 +128,16 @@ test('evals.json is well-formed and every eval is runnable', () => {
     assert.ok(spec.expected_output.trim().length > 10, `eval ${spec.id} needs an expected output`);
     assert.ok(spec.expectations.length > 0, `eval ${spec.id} needs expectations`);
     assert.ok(kinds.has(spec.kind), `eval ${spec.id} has unknown kind: ${spec.kind}`);
-    assert.ok(existsSync(path.join(REPO, 'evals', 'fixtures', spec.fixture, 'README.md')),
+    const fixtureDir = path.join(REPO, 'evals', 'fixtures', spec.fixture);
+    assert.ok(existsSync(path.join(fixtureDir, 'package.json')),
       `eval ${spec.id} fixture exists: ${spec.fixture}`);
+    if (spec.kind === 'create-readme') {
+      assert.ok(!existsSync(path.join(fixtureDir, 'README.md')),
+        `eval ${spec.id} fixture must have no README, otherwise it is not a create-from-scratch case`);
+    } else {
+      assert.ok(existsSync(path.join(fixtureDir, 'README.md')),
+        `eval ${spec.id} fixture needs a README: ${spec.fixture}`);
+    }
   }
 });
 
@@ -195,6 +203,20 @@ test('reference output is reproducible byte for byte', () => {
   }
   assert.ok(readFileSync(path.join(first, 'README.md'), 'utf8').includes(MANAGED_START));
   assert.ok(readFileSync(path.join(first, 'README.md'), 'utf8').includes(MANAGED_END));
+});
+
+test('a run that edits beyond the requested section is caught by eval 3', () => {
+  const { evals } = loadEvals();
+  const spec = evals.find((e) => e.kind === 'section-edit');
+  const target = path.join(tmpDir('scope-regress'), spec.fixture);
+  runReference(spec.id, target);
+
+  const readme = path.join(target, 'README.md');
+  writeFileSync(readme, readFileSync(readme, 'utf8').replace('npm install -g acme-widget', 'npm install -g acme-widget@next'));
+
+  const verdict = grade(spec, target);
+  const scopeExpectation = verdict.expectations.find((e) => e.text === 'README 的其他小节与原始文件一致');
+  assert.equal(scopeExpectation.passed, false, 'grader must notice an edit outside the named section');
 });
 
 test('a run that rewrites the README uninvited is caught by eval 1', () => {

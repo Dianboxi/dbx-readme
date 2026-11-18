@@ -34,6 +34,22 @@ const RUNS = {
     args: ['--preset', 'ascii', '--theme', 'minimal', '--title', 'ACME WIDGET CLI'],
     readme: null,
   },
+  'section-edit': {
+    // 用户只要求改 Usage 一段文字：不跑 CLI、不生成资源，只改那一段。
+    prepare(target) {
+      const file = path.join(target, 'README.md');
+      const text = readFileSync(file, 'utf8');
+      if (!text.includes('--count 3')) throw new Error('fixture drifted: README has no "--count 3"');
+      writeFileSync(file, text.replace('--count 3', '--count 5'));
+    },
+    readme: null,
+  },
+  'create-readme': {
+    // 用户要求建 README 并加横幅：先写正文，再 init/generate 并把受管块插在顶部。
+    writeReadme: '# Acme Widget CLI\n\nA tiny CLI that prints widgets in your terminal.\n',
+    args: ['--preset', 'ascii', '--theme', 'terminal', '--title', 'ACME WIDGET CLI', '--tagline', 'A tiny CLI that prints widgets in your terminal'],
+    readme: 'README.md',
+  },
 };
 
 function dbx(cwd, args) {
@@ -58,18 +74,23 @@ export function runReference(evalIdOrSlug, target) {
   if (existsSync(target)) throw new Error(`target already exists: ${target}`);
   cpSync(fixturePath(spec.fixture), target, { recursive: true });
 
-  dbx(target, ['init', '--cwd', target, '--config', 'banner.config.json', ...plan.args]);
+  if (plan.prepare) plan.prepare(target);
+  if (plan.writeReadme) writeFileSync(path.join(target, 'README.md'), plan.writeReadme);
 
-  if (plan.outputDir) {
-    const file = path.join(target, 'banner.config.json');
-    const config = JSON.parse(readFileSync(file, 'utf8'));
-    config.outputDir = plan.outputDir;
-    writeFileSync(file, `${JSON.stringify(config, null, 2)}\n`);
-  }
+  if (plan.args) {
+    dbx(target, ['init', '--cwd', target, '--config', 'banner.config.json', ...plan.args]);
 
-  dbx(target, ['generate', '--cwd', target, '--config', 'banner.config.json']);
-  if (plan.readme) {
-    dbx(target, ['generate', '--cwd', target, '--config', 'banner.config.json', '--readme', plan.readme]);
+    if (plan.outputDir) {
+      const file = path.join(target, 'banner.config.json');
+      const config = JSON.parse(readFileSync(file, 'utf8'));
+      config.outputDir = plan.outputDir;
+      writeFileSync(file, `${JSON.stringify(config, null, 2)}\n`);
+    }
+
+    dbx(target, ['generate', '--cwd', target, '--config', 'banner.config.json']);
+    if (plan.readme) {
+      dbx(target, ['generate', '--cwd', target, '--config', 'banner.config.json', '--readme', plan.readme]);
+    }
   }
 
   return target;

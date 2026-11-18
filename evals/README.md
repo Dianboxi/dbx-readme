@@ -10,18 +10,20 @@
 
 | 文件 | 作用 |
 | --- | --- |
-| `evals.json` | 唯一事实源：三个场景的 prompt、期望产出、可机械判定的断言 |
-| `fixtures/` | 两个待改造的假仓库：`proj-basic`（普通 README）、`proj-existing`（手写 README，明确禁止改写） |
+| `evals.json` | 唯一事实源：五个场景的 prompt、期望产出、可机械判定的断言 |
+| `fixtures/` | 三个待改造的假仓库：`proj-basic`（普通 README）、`proj-existing`（手写 README，明确禁止改写）、`proj-empty`（没有 README） |
 | `grade.mjs` | 机械打分器：只读磁盘状态、受管标记、`--check` 退出码，不调用模型 |
-| `reference-run.mjs` | 复现"正确的一次执行"：按 SKILL.md 的流程跑 init → 按需改 outputDir → generate →（已授权才）插入受管块 |
+| `reference-run.mjs` | 复现"正确的一次执行"：按 SKILL.md 的流程跑 init → 按需改 outputDir → generate →（已授权才）插入受管块；只改一段文字或从零建 README 的场景另有对应动作 |
 
-三个场景：
+五个场景：
 
 | id | 请求 | 该有的行为 |
 | --- | --- | --- |
 | 0 | README 顶部加横幅，浅深两套 | 生成配置与成对 SVG，插入一对受管标记，`--check` 幂等 |
 | 1 | 做张 banner 放 assets 里，别动 README | 只出资源；`outputDir` 就是 `assets`，不再多套一层；README 字节不变 |
 | 2 | "看着太素了，弄得像样点" | 只出资源，不动 README 与源码，并请用户确认是否插入 |
+| 3 | Usage 那段的 `--count 3` 过时了，改成 5，其他别动 | 只改 Usage 一节；不生成横幅、不加标记；其他小节保持不变 |
+| 4 | 仓库还没有 README，建一个并在顶部加横幅 | 新建 README 并写入正文，插入一对受管标记，产出成对 SVG，`--check` 幂等 |
 
 ## CI 里跑什么，以及为什么不在这里跑 agent
 
@@ -32,7 +34,7 @@ CI 跑 `npm run evals`（即 `test/skill-eval.test.mjs`），它验证四件事�
 2. **评测定义自洽**：`evals.json` 结构合法、fixture 存在、`grade.mjs` 输出的断言文本与 `evals.json` 逐条一致（防漂移）。
 3. **参考执行满分**：`reference-run.mjs` 产出的目录必须拿到 100%。
 4. **断言不是空的**：把原封不动的 fixture 丢给打分器必须失败；故意改写 README 必须被 eval 1 抓到；
-   两次参考执行产物逐字节一致。
+   改到 Usage 以外的小节必须被 eval 3 抓到；两次参考执行产物逐字节一致。
 
 **CI 里没有 LLM，因此它检验的是"流程契约"，不是"模型的判断力"。** 如果哪天 SKILL.md 的流程说明
 与 CLI 实际行为脱节（比如默认 `outputDir` 改了、`--readme` 语义变了），第 3 项会立刻红。
@@ -76,7 +78,7 @@ with skill 只产出 `assets/banner/*.svg` 与配置，README 字节不变，并
 
 ## 加一个场景
 
-1. 在 `evals.json` 加一条：`id`、`slug`、`kind`（`insert` / `assets` / `vague`）、`fixture`、`prompt`、`expected_output`、`expectations`。
+1. 在 `evals.json` 加一条：`id`、`slug`、`kind`（`insert` / `assets` / `vague` / `section-edit` / `create-readme`）、`fixture`、`prompt`、`expected_output`、`expectations`。
 2. 需要新 fixture 就放 `fixtures/<name>/`（保持极小：README + package.json + 一个源文件）。
 3. 若是新 kind，在 `grade.mjs` 里加对应断言分支；若是已有 kind，通常只需加断言。
 4. `reference-run.mjs` 里补该场景"正确执行"的动作，然后 `npm run evals` 必须全绿。

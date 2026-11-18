@@ -11,4 +11,8 @@ export { generateBanner } from './generate.js';
 export { parseConfig, readConfigText } from './config.js';
 export { getTheme, themes } from './themes.js';
 export { bannerSnippet, updateReadme } from './readme.js';
+export {
+  PRESENTATION_CONFIG, applyTopics, createGhRunner, detectRepository, formatPlan, parsePresentationConfig, parseRepoMetadata, planTopics, readMetadata,
+} from './topics.js';
+export type { GhRunner, PresentationConfig, RepoMetadata, TopicsPlan } from './topics.js';
 export type { BannerConfig, BannerPreset, BannerTheme, GeneratedBanner, RenderContext, ThemePalette, ThemeVariant } from './types.js';

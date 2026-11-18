@@ -2,7 +2,7 @@
 
 ## 产品与范围
 
-dbx-readme 是 Node.js >=22 / TypeScript / ESM 的本地 CLI 与可编程渲染基础设施。目标是把仓库中的 JSON 配置转为可提交的浅色、深色 SVG，并在用户明确指定时维护 README 中的一小块嵌入标记。当前版本为 `0.2.2`（`main`；首个公开版本为 `v0.1.0`，最近可用的固定标签为 `v0.2.2`），仓库为 [Dianboxi/dbx-readme](https://github.com/Dianboxi/dbx-readme)。
+dbx-readme 是 Node.js >=22 / TypeScript / ESM 的本地 CLI 与可编程渲染基础设施。目标是把仓库中的 JSON 配置转为可提交的浅色、深色 SVG，并在用户明确指定时维护 README 中的一小块嵌入标记。当前版本为 `0.3.0`（`main`；首个公开版本为 `v0.1.0`，最近可用的固定标签为 `v0.2.2`），仓库为 [Dianboxi/dbx-readme](https://github.com/Dianboxi/dbx-readme)。
 
 `ascii` 是第一个 **renderer preset**；`terminal`、`ocean`、`neon`、`minimal` 是独立 **theme**。后续可增加非 ASCII 渲染器，不需要把所有样式硬塞入 ASCII 的选项。
 
@@ -42,7 +42,7 @@ JSON configuration -> common validation -> preset / theme lookup
 | 文件与 README 编排 | 安全路径、固定产物名、相对 URL、受管块、检查模式 | 把远程 SVG 当作可直接执行 / 注入的输入 |
 | Skill | 确认目标仓库、主题、README 授权，调用相同 CLI | 扩大文件权限、自动提交或发布 |
 
-通用配置与类型见 [配置实现](<../src/config.ts>)、[公开类型](<../src/types.ts>)；注册表和调色板见 [registry](<../src/registry.ts>)、[themes](<../src/themes.ts>)。ASCII renderer 使用精确锁定的 `ascii.rest@0.4.0`；依赖声明与构建入口见 [package.json](<../package.json>)。
+通用配置与类型见 [配置实现](<../src/config.ts>)、[公开类型](<../src/types.ts>)；注册表和调色板见 [registry](<../src/registry.ts>)、[themes](<../src/themes.ts>)。仓库元数据（description / topics）见 [topics](<../src/topics.ts>)：解析 `presentation.config.json`、算出 `add`/`remove`/`unchanged` 计划，再由 `gh repo edit` 落地。ASCII renderer 使用精确锁定的 `ascii.rest@0.4.0`；依赖声明与构建入口见 [package.json](<../package.json>)。
 
 ## 核心接口与扩展
 

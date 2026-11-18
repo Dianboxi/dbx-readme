@@ -13,7 +13,7 @@
 
 ## 当前发布状态（需先读这段）
 
-- 包版本：`main` 上为 `0.2.2`；固定标签 `v0.2.2` → `5f9a918`（即产出 0.2.2 tarball 的提交）。
+- 包版本：`main` 上为 `0.3.0`；固定标签 `v0.2.2` → `5f9a918`（即产出 0.2.2 tarball 的提交）。
 - npm：**`dbx-readme@0.2.2` 已发布**（`dist-tags.latest` 指向它；干净目录 `npx --yes dbx-readme@0.2.2 --version` 返回 `0.2.2`）。上一版 `0.2.1` 仍在，仅作历史版本。发布 0.2.2 的原因：0.2.1 的 tarball 里 `SKILL.md` / `README.md` 还写着“尚未发布到 npm”，自相矛盾；0.2.2 修正了这些文案，并补了 `evals/README.md` 的 iteration-4 结论。
 - 标签顺序：**先发布再打标签**。标签会触发 release workflow，其守卫只认“npm 上该版本已存在”；若提前打标签，`npm publish` 会因缺少 trusted publisher 配置而失败。历史标签 `v0.1.0`、`v0.2.0`、`v0.2.1` 保持不动。
 - 分发分工：CLI 走 npm；skill 仍从 GitHub 读取（`npx skills add Dianboxi/dbx-readme --skill dbx-readme`）。
