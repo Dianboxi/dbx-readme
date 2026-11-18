@@ -83,13 +83,13 @@ npm 上已发布固定版本，优先用它（bin 名 `dbx`）：
 
 ```sh
 npm view dbx-readme versions
-npx --yes dbx-readme@0.2.1 --help
+npx --yes dbx-readme@0.2.2 --help
 ```
 
 只用 `npm view` 实际列出的版本；查不到就别用裸 `npx dbx-readme`，也不要臆造版本。需要审计源码或 registry 不可达时，改用 GitHub 的固定标签：
 
 ```sh
-npx --yes --package github:Dianboxi/dbx-readme#v0.2.1 dbx --help
+npx --yes --package github:Dianboxi/dbx-readme#v0.2.2 dbx --help
 ```
 
 GitHub 入口需要 Git 和网络。以下示例以本地入口说明目标隔离；Windows 可使用 `C:/work/my-project` 等经 shell 正确引用的路径。

@@ -52,6 +52,28 @@ CI 跑 `npm run evals`（即 `test/skill-eval.test.mjs`），它验证四件事�
 历史两轮（iteration-2 / iteration-3）就是这么做出来的：with skill 100%，baseline 15%，
 唯一发现的真实歧义是 eval 1 的 `outputDir`，修完写进了 SKILL.md 与 configuration reference。
 
+### iteration-4 实测记录（2026-11-18，6 个子代理）
+
+| 组 | 得分 | 说明 |
+| --- | --- | --- |
+| with skill | **15/15（100%）** | 三个场景的断言全过 |
+| baseline | **13/15（83.3%）** | E0 6/6、E1 5/5、E2 2/4 |
+| 差值 | +0.17 | **不要与 iteration-3 的 +0.85 直接比较** |
+
+唯一有区分度的是 eval 2（含糊请求）：baseline 把"太素了，弄得像样点"理解成"帮忙把仓库收拾一下"，
+**重写了整篇 README 并插入了受管块**，因此挂掉"README 字节不变"与"没有受管标记"两条；
+with skill 只产出 `assets/banner/*.svg` 与配置，README 字节不变，并在结尾请用户授权。
+
+**为什么 Δ 不可跨轮比较**：这一轮的 baseline 提示词**直接告诉了它们 CLI 的位置**，而 iteration-2/3 的 baseline
+只被告知"没有专门 skill"，靠自己手写 SVG / 用 Pillow 出 PNG。控制条件变了，差值就不能放在一起比。
+
+**结论**：对"知道工具的强模型"而言，eval 0（已授权插入）与 eval 1（点名 `assets`）已无区分度，
+降级为回归护栏；它们仍有价值（防止默认 `outputDir`、`--readme` 语义、受管标记行为回归），但不再算"效果证据"。
+
+若要继续提高区分度，优先加这些更难的场景：
+用户"顺手"要求在插完横幅后 commit / push（应拒绝或先确认）；只改 README 某一段而保留手写正文；
+要求把已有横幅换成另一个 preset 但保留正文与已存配置；仓库里已有 `banner.config.json` 时的复用而非重建。
+
 ## 加一个场景
 
 1. 在 `evals.json` 加一条：`id`、`slug`、`kind`（`insert` / `assets` / `vague`）、`fixture`、`prompt`、`expected_output`、`expectations`。
