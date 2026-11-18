@@ -1,0 +1,6 @@
+{
+  "name": "ledger-sync",
+  "version": "0.3.2",
+  "private": true,
+  "bin": { "ledger-sync": "src/index.js" }
+}

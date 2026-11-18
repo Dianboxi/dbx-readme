@@ -1,0 +1,6 @@
+{
+  "name": "acme-widget",
+  "version": "1.0.0",
+  "private": true,
+  "bin": { "acme": "src/index.js" }
+}

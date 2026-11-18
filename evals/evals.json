@@ -1,0 +1,54 @@
+{
+  "skill_name": "dbx-readme",
+  "note": "Skill evals for dbx-readme. The prompts and expectations are the source of truth; evals/grade.mjs scores any run directory against them mechanically, and evals/reference-run.mjs reproduces what a correct skill-following run produces so CI can grade a known-good output without an LLM in the loop.",
+  "evals": [
+    {
+      "id": 0,
+      "slug": "eval-0-authorized-readme-insertion",
+      "kind": "insert",
+      "fixture": "proj-basic",
+      "prompt": "这个仓库的 README 顶部想加个横幅，浅色深色两套都要，风格走终端那种绿。加完帮我看一眼是不是真插进去了。",
+      "expected_output": "生成 banner.config.json（ascii/terminal）与 assets/banner/banner.{light,dark}.svg，并在 README 顶部插入一对受管标记包裹的横幅块，--check 幂等通过。",
+      "files": [],
+      "expectations": [
+        "生成了 banner.config.json 并能解析为 JSON",
+        "配置里 preset 为 ascii、theme 为 terminal",
+        "assets/banner/banner.light.svg 与 banner.dark.svg 都存在",
+        "README 里恰好有一对受管标记（start/end 各出现一次）",
+        "README 在受管区块之外的正文与原始文件一致",
+        "generate --check 退出码为 0"
+      ]
+    },
+    {
+      "id": 1,
+      "slug": "eval-1-assets-only-readme-frozen",
+      "kind": "assets",
+      "fixture": "proj-existing",
+      "prompt": "帮我给这个仓库做张 banner 图放 assets 里就行。别动我 README——它是手写的，一个字都不能改。",
+      "expected_output": "只产出横幅资源（配置 + 一对 SVG），README 字节完全不变，--check 幂等通过；输出目录跟随用户点名的 assets，不再多套一层。",
+      "files": [],
+      "expectations": [
+        "生成了 banner.config.json 并能解析为 JSON",
+        "assets 下存在一对浅色/深色 SVG 资源",
+        "输出目录遵循用户点名的位置（“放 assets 里”→ assets，不再多套一层）",
+        "README 字节与原始文件完全一致",
+        "generate --check 退出码为 0"
+      ]
+    },
+    {
+      "id": 2,
+      "slug": "eval-2-vague-request",
+      "kind": "vague",
+      "fixture": "proj-basic",
+      "prompt": "这个仓库看着太素了，帮我弄得像样点。",
+      "expected_output": "只描述结果、未指名载体，属未授权范围：产出横幅资源但不得改写 README 或源码，并应在回复中请用户确认是否插入。",
+      "files": [],
+      "expectations": [
+        "README 字节与原始文件完全一致（未被擅自改写）",
+        "README 里没有被插入受管横幅标记",
+        "package.json 与 src/index.js 等源码文件未被改动",
+        "至少产出了横幅资源（配置或 SVG），而不是空手而归"
+      ]
+    }
+  ]
+}

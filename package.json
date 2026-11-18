@@ -5,25 +5,61 @@
   "type": "module",
   "license": "MIT",
   "author": "Dianboxi 电波系",
-  "engines": { "node": ">=22" },
-  "bin": { "dbx": "bin/dbx.mjs" },
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "dbx": "bin/dbx.mjs"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
-  "files": ["bin", "dist", "skills", "README.md", "LICENSE", "THIRD_PARTY_NOTICES.md"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "bin",
+    "dist",
+    "skills",
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md"
+  ],
   "sideEffects": false,
-  "publishConfig": { "access": "public" },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "npm run build && node --test test/*.test.mjs",
+    "evals": "npm run build && node --test test/skill-eval.test.mjs",
     "check": "tsc -p tsconfig.json --noEmit",
     "prepare": "npm run build",
     "prepublishOnly": "npm run check && npm test"
   },
-  "repository": { "type": "git", "url": "git+https://github.com/Dianboxi/dbx-readme.git" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dianboxi/dbx-readme.git"
+  },
   "homepage": "https://github.com/Dianboxi/dbx-readme#readme",
-  "bugs": { "url": "https://github.com/Dianboxi/dbx-readme/issues" },
-  "keywords": ["readme", "banner", "ascii", "cli", "agent-skill", "dbx"],
-  "dependencies": { "ascii.rest": "0.4.0" },
-  "devDependencies": { "@types/node": "^22.19.0", "typescript": "^5.9.3" }
+  "bugs": {
+    "url": "https://github.com/Dianboxi/dbx-readme/issues"
+  },
+  "keywords": [
+    "readme",
+    "banner",
+    "ascii",
+    "cli",
+    "agent-skill",
+    "dbx"
+  ],
+  "dependencies": {
+    "ascii.rest": "0.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.0",
+    "typescript": "^5.9.3"
+  }
 }

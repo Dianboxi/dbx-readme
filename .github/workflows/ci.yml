@@ -21,6 +21,7 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm test
+      - run: npm run evals
       - run: node bin/dbx.mjs generate --readme README.md --check
       - run: node examples/generate-gallery.mjs --check
       - run: node examples/image-to-ascii/generate.mjs --check
