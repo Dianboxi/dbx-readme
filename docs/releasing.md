@@ -23,6 +23,7 @@
 
 - **过往阻塞·墓碑（2026-11-18 实测）**：冷却结束后首次重发仍可能返回 `E409 Conflict - Failed to save packument`——registry 上该文档 `versions` 为空、只剩 `time.unpublished` 记录。重试一次即成功（第二次返回 `+ dbx-readme@0.2.1` 与“being processed”提示，约 2 分钟后 packument 才出现新版本）。**不要为此升版本号**（阻塞在名字层），也不要连续重试。
 - **认证失败会被伪装成 404**：`npm whoami` 返回 401 时，`PUT` 表现为 `404 Not Found - PUT https://registry.npmjs.org/dbx-readme`。先跑 `npm whoami --userconfig …` 确认登录，再判断是不是包名问题。
+- **重复弃用返回 422**：`npm deprecate` 是对整份 packument 的读改写，若该版本已经是同一条弃用说明，registry 返回 `E422 Unprocessable Entity - PUT https://registry.npmjs.org/dbx-readme`（响应体为空，debug log 也看不到原因）。先 `npm view dbx-readme@<版本> deprecated` 确认现状再决定是否重跑：2026-11-18 实测 `dbx-readme@0.2.1` 的弃用已生效，第二次运行才报 422。另：`npm view` 对刚写入的字段可能有 CDN 缓存延迟，以 `curl https://registry.npmjs.org/dbx-readme` 的 `versions[v].deprecated` 为准。
 
 ## 一次性前置
 
