@@ -13,11 +13,11 @@
 
 ## 当前发布状态（需先读这段）
 
-- 包版本：`main` 上为 `0.2.2`。
-- npm：`dbx-readme@0.2.1` 已于 2026-11-18 发布（`dist-tags.latest` 指向它，干净目录 `npx --yes dbx-readme@0.2.1 --version` 返回 `0.2.1`）。**`0.2.2` 是文案修正版（修正 tarball 内 SKILL.md / README 里“尚未发布到 npm”的过期描述），尚未发布**——发布成功后把本条改成已发布，并把 `v0.2.2` 标签指向该提交。
-- 标签顺序：**先发布再打标签**。标签会触发 release workflow，其守卫只认“npm 上该版本已存在”；若提前打标签，`npm publish` 会因缺少 trusted publisher 配置而失败。`v0.2.1` → `1682f7c`（产出 0.2.1 tarball 的提交）；历史标签 `v0.1.0`、`v0.2.0` 保持不动。
+- 包版本：`main` 上为 `0.2.2`；固定标签 `v0.2.2` → `5f9a918`（即产出 0.2.2 tarball 的提交）。
+- npm：**`dbx-readme@0.2.2` 已发布**（`dist-tags.latest` 指向它；干净目录 `npx --yes dbx-readme@0.2.2 --version` 返回 `0.2.2`）。上一版 `0.2.1` 仍在，仅作历史版本。发布 0.2.2 的原因：0.2.1 的 tarball 里 `SKILL.md` / `README.md` 还写着“尚未发布到 npm”，自相矛盾；0.2.2 修正了这些文案，并补了 `evals/README.md` 的 iteration-4 结论。
+- 标签顺序：**先发布再打标签**。标签会触发 release workflow，其守卫只认“npm 上该版本已存在”；若提前打标签，`npm publish` 会因缺少 trusted publisher 配置而失败。历史标签 `v0.1.0`、`v0.2.0`、`v0.2.1` 保持不动。
 - 分发分工：CLI 走 npm；skill 仍从 GitHub 读取（`npx skills add Dianboxi/dbx-readme --skill dbx-readme`）。
-- 遗留：registry 上仍留着一个 `0.0.0-stage` 版本记录（暂存发布产物，不是 `latest`）。可用 `npm deprecate dbx-readme@0.0.0-stage "staged placeholder; use 0.2.1"` 标注，避免有人手滑固定它。
+- 清理记录：`0.0.0-stage`（暂存发布产物，不是 `latest`）已于 2026-11-18 标注弃用：`npm deprecate dbx-readme@0.0.0-stage "staged placeholder; use 0.2.2"`，registry 上该版本带 `deprecated` 字段。
 - 发布方式（passkey 账号不能用 `--otp`）：web 认证实测可行——先 `npm login --auth-type=web --userconfig "$env:TEMP\npm-web.npmrc"`，再 `npm publish --access public --userconfig "$env:TEMP\npm-web.npmrc"`；浏览器确认 `https://www.npmjs.com/auth/cli/<id>` 后 npm 才会真正发起 PUT。注意这会绕开 `.npmrc` 里已有的普通 token，两者不要混用。
 - **过往阻塞·已解除（2026-11-17 实测）**：撤回暂存发布会在 registry 留下 unpublished 记录，npm 因此禁止该包名在 **24 小时**内重新发布，PUT 返回 `403 Forbidden - dbx-readme cannot be republished until 24 hours have passed.`。本次撤回发生在 `2026-11-17T09:10:46Z`，最早可重发时间为 **`2026-11-18T09:10:46Z`（北京时间 2026-11-18 17:10）**；在此之前任何重试都会得到同样的 403，不要误判为 token 或权限问题。
 
