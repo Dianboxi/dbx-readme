@@ -28,7 +28,7 @@
 
 1. 确认包名归属：`npm view dbx-readme version`。首次发布前为 404 属正常。
 2. 登录：`npm login`，账号需开启 2FA（发布时会要求 OTP）。
-3. 仓库管理员在 npm 上配置 trusted publisher（可选，仅 CI 发布需要）。
+3. 仓库管理员在 npm 上把 `.github/workflows/release.yml` 登记为 trusted publisher（可选，仅当希望由 CI 发布时需要；步骤见“CI 发布”一节）。
 
 ## npm 2FA 与发布凭证
 
@@ -45,7 +45,7 @@ npm error Two-factor authentication or granular access token with bypass 2fa ena
 1. **暂存发布（通行密钥账号的唯一可行路径）**：见下一节。上传阶段不需要 2FA，审批在浏览器里用通行密钥完成。
 2. **单次 OTP**：`npm publish --otp=<6 位代码>`。仅适用于用认证器 App（TOTP）的账号；`--otp` 不接受通行密钥。`prepublishOnly` 会先跑约 13 秒的检查，所以要在命令执行前刚生成代码。
 3. **专用 token**：在 npm 网页端创建 Granular Access Token，勾选 **Bypass 2FA**，权限给 `read and write`，并只授权本包；替换 `.npmrc` 中的 `_authToken`。适合需要反复本地发布的场景，但该能力正在收紧。
-4. **CI 发布免 token**：包存在后，在 npm 包设置里把 `.github/workflows/release.yml` 登记为 trusted publisher，标签发布即可走 OIDC 并带 provenance，不再需要 OTP 或 token。
+4. **CI 发布免 token**：包存在后，在 npm 包设置里把 `.github/workflows/release.yml` 登记为 trusted publisher，标签发布即可走 OIDC 并带 provenance，不再需要 OTP 或 token。具体步骤见下面“CI 发布”一节。
 
 ## 暂存发布（无需 TOTP）
 
@@ -62,6 +62,55 @@ npm stage view <stage-id>     # 核对版本、tag、access、shasum
 首次发布新包时，注册表会立刻出现一个占位版本 `0.0.0-stage` 并占用该包名——这是预期行为，不是发布成功。审批通过后目标版本才替换它，`dist-tags` 才会指向真实版本。
 
 要求 npm CLI ≥ 11.15.0 与 Node ≥ 22.14.0。暂存后状态会先显示 `validating`（安全扫描），扫描完成才可审批。
+
+## CI 发布：把 workflow 登记为 trusted publisher（OIDC，免 token）
+
+现状：`release.yml` 已经在推送 `v*` 标签时触发，具备 `id-token: write`，并且只在“npm 上还没有这个版本”时才真正发布。
+**目前它只会跳过**（日志：`dbx-readme@x.y.z is already published; skipping npm publish.`），因为包还没有登记 trusted publisher。这是预期行为，不是故障。
+
+### 一次性配置（npm 网页，需包所有者）
+
+1. 打开 `https://www.npmjs.com/package/dbx-readme/access`。
+2. 在 **Trusted Publisher** 区域选 **GitHub Actions**，按下表填写：
+
+| 字段 | 值 |
+| --- | --- |
+| Organization or user | `Dianboxi` |
+| Repository | `dbx-readme` |
+| Workflow filename | `release.yml`（**只写文件名**；填 `.github/workflows/release.yml` 会被拒） |
+| Environment name | 留空（工作流未声明 `environment:`） |
+
+3. 保存。npm 不发放长期 token：CI 用 GitHub 的 OIDC 临时凭据换取一次性发布权限。
+
+### 之后的发布流程
+
+```bash
+# 1. 本地 bump 版本并提交：package.json / package-lock（2 处）/ src/cli.ts 的 VERSION
+#    / test/cli.test.mjs 断言 / SKILL.md 的 metadata.version / docs/architecture.md 当前版本
+npm version <patch|minor|major> --no-git-tag-version
+npm run check && npm test
+git commit -am "chore(release): <version>"
+git push
+
+# 2. 打标签并推送，由 CI 完成发布
+git tag -a v<version> -m "dbx-readme <version>"
+git push origin v<version>
+```
+
+工作流依次执行 `npm ci` → `npm run check` → `npm test` → 校验标签与 `package.json` 版本一致 → 若 npm 上尚无该版本则 `npm publish --provenance --access public`。
+发布后 npm 包页面会出现 **Provenance** 徽标，可追溯到具体 commit 与 workflow run。
+
+### 失败排查
+
+| 现象 | 原因 |
+| --- | --- |
+| `404 Not Found - PUT` 或 `403 ... 2FA required` | trusted publisher 没保存成功，或组织名 / 仓库名 / workflow 文件名填错 |
+| `Tag v… does not match package.json version …` | 标签与版本不一致：删标签重打 |
+| 步骤被跳过并打印 `already published; skipping` | npm 上已有该版本，属正常 |
+| provenance 相关报错 | 工作流缺 `id-token: write`，或运行环境不支持 OIDC |
+
+两点边界：trusted publisher 与网页 passkey 是两条并行通道，登记后仍可在本地用 web 登录发布，两者不冲突；
+若只想先验证一次，可不动 npm 设置，继续按“通行密钥 → web 登录”那条路走。
 
 ## 版本号与 tag
 
